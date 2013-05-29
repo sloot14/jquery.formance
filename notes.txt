@@ -1,0 +1,11 @@
+npm install jquery
+npm install mocha
+npm install coffeescript
+npm install https://github.com/omarshammas/jquery.formance.git
+
+export NODE_PATH=/usr/local/lib/node_modules
+echo $NODE_PATH
+
+cake build
+cake test
+cake watch
