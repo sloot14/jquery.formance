@@ -12,7 +12,7 @@ $.validators.validateCardNumber = (num) ->
 
 $.validators.validateCardExpiry = (expiry_string) ->
         expiry = $.payment.cardExpiryVal(expiry_string)
-        return $.payment.validateCardExpiry(expiry['month'], expiry['year'])
+        return $.payment.validateCardExpiry(expiry.month, expiry.year)
 
 $.validators.validateCardCVC = (cvc, type) ->
         return $.payment.validateCardCVC(cvc, type)
@@ -45,6 +45,7 @@ $.validators.validatePhoneNumber = (phone_string) ->
 
 
 $.validators.validatePostalCode = (postal_code_string) ->
+	return false unless postal_code_string?
 	postal_code_string = postal_code_string.replace(/\s+/g, '')
 	return false unless /^[a-zA-Z\d]+$/.test(postal_code_string)
 
@@ -62,12 +63,15 @@ $.validators.fn.dateVal = ->
   $.validators.dateVal($(this).val())
 
 $.validators.dateVal = (date_string) ->
-	# [day, month, year] = if /[^\d\/\s]/g.test(date_string) then (NaN, NaN, NaN) else 
-	
-	[day, month, year] = date_string.replace(/\s/g, '').split('/', 3)
+	[day, month, year] = if date_string? then date_string.replace(/\s/g, '').split('/', 3) else [NaN, NaN, NaN]
 
 	day   = parseInt(day, 10)
 	month = parseInt(month, 10)
 	year  = parseInt(year, 10)
 
 	return day: day, month: month, year: year
+
+$.validators.fn.cardExpiryVal =->
+	$validators.cardExpiryVal($(this).val())
+
+$.validators.cardExpiryVal = $.payment.cardExpiryVal
