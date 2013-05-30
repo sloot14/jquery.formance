@@ -19,7 +19,7 @@ describe 'jquery.formance.js', ->
 			e.which = 52 # '4'
 			$field.trigger(e)
 	
-			assert.equal $field.val(), '1234'
+			assert.equal '1234', $field.val()
 
 		it 'should restrict letters from being entered', ->
 			$field = $('<input type=text>').formance('restrictNumeric')
@@ -28,8 +28,8 @@ describe 'jquery.formance.js', ->
 			e.which = 68 # 'd'
 			$field.trigger(e)
 
-			assert.equal $field.val(), ''
-
+			assert.equal '', $field.val()
+ 
 		it 'should restrict special characters from being entered', ->
 			$field = $('<input type=text>').formance('restrictNumeric')
 
@@ -37,8 +37,8 @@ describe 'jquery.formance.js', ->
 			e.which = 189 # '-'
 			$field.trigger(e)
 
-			assert.equal $field.val(), ''
-
+			assert.equal '', $field.val()
+ 
 
 
 	describe 'restrictAlphaNumeric', ->		
@@ -50,7 +50,7 @@ describe 'jquery.formance.js', ->
 			e.which = 52 # '4'
 			$field.trigger(e)
 
-			assert.equal $field.val(), '4'
+			assert.equal '4', $field.val()
 
 		it 'should allow letters to be entered', ->
 			$field = $('<input type=text>').formance('restrictAlphaNumeric')
@@ -59,7 +59,7 @@ describe 'jquery.formance.js', ->
 			e.which = 68 # 'd'
 			$field.trigger(e)
 
-			assert.equal $field.val(), 'd'
+			assert.equal 'd', $field.val()
 
 		it 'should restrict special characters from being entered', ->
 			$field = $('<input type=text>').formance('restrictAlphaNumeric')
@@ -68,4 +68,4 @@ describe 'jquery.formance.js', ->
 			e.which = 189 # '-'
 			$field.trigger(e)
 
-			assert.equal $field.val(), ''
+			assert.equal '', $field.val()

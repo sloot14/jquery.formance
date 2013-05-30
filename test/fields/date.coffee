@@ -18,7 +18,7 @@ describe 'date.js', ->
 			e.which = 52 # '4'
 			$date.trigger(e)
 
-			assert.equal $date.val(), '04 / '
+			assert.equal '04 / ', $date.val()
 
 		it 'should format day correctly double digit', ->
 			$date = $('<input type=text>').formance('formatDate')
@@ -28,7 +28,7 @@ describe 'date.js', ->
 			e.which = 52 # '4'
 			$date.trigger(e)
 
-			assert.equal $date.val(), '24 / '
+			assert.equal '24 / ', $date.val()
 
 		it 'should format forward slash shorthand correctly', ->
 			$date = $('<input type=text>').formance('formatDate')
@@ -38,7 +38,7 @@ describe 'date.js', ->
 			e.which = 47 # '/'
 			$date.trigger(e)
 
-			assert.equal $date.val(), '01 / '
+			assert.equal '01 / ', $date.val()
 
 		it 'should format month correctly single digit', ->
 			$date = $('<input type=text>').formance('formatDate')
@@ -48,7 +48,7 @@ describe 'date.js', ->
 			e.which = 57 # '9'
 			$date.trigger(e)
 
-			assert.equal $date.val(), '04 / 09 / '
+			assert.equal '04 / 09 / ', $date.val()
 
 		it 'should format day correctly double digit', ->
 			$date = $('<input type=text>').formance('formatDate')
@@ -58,7 +58,7 @@ describe 'date.js', ->
 			e.which = 50 # '2'
 			$date.trigger(e)
 
-			assert.equal $date.val(), '24 / 12 / '
+			assert.equal '24 / 12 / ', $date.val()
 
 		it 'should format forward slash shorthand correctly', ->
 			$date = $('<input type=text>').formance('formatDate')
@@ -68,7 +68,7 @@ describe 'date.js', ->
 			e.which = 47 # '/'
 			$date.trigger(e)
 
-			assert.equal $date.val(), '24 / 01 / '
+			assert.equal '24 / 01 / ', $date.val()
 
 		it 'should only allow numbers', ->
 			$date = $('<input type=text>').formance('formatDate')
@@ -78,7 +78,7 @@ describe 'date.js', ->
 			e.which = 100 # 'd'
 			$date.trigger(e)
 
-			assert.equal $date.val(), '01 / 12 / '
+			assert.equal '01 / 12 / ', $date.val()
 
 
 	describe 'Validating a date', ->
@@ -86,83 +86,83 @@ describe 'date.js', ->
 		it 'that is a valid day', ->
 			date = new Date()
 			topic = $.formance.validateDate date.getDay(), date.getMonth(), date.getFullYear()
-			assert.equal topic, true
+			assert.equal true, topic
 
 		it 'that has string numbers', ->
 			date = new Date()
 			topic = $.formance.validateDate date.getDay()+'', date.getMonth()+'', date.getFullYear()+''
-			assert.equal topic, true
+			assert.equal true, topic
 
 		it 'that has an invalid day', ->
 			# TODO can have better logic, for example selecting 31 of february
 			topic = $.formance.validateDate -1, 12, 2013
-			assert.equal topic, false
+			assert.equal false, topic
 
 			topic = $.formance.validateDate 32, 12, 2013
-			assert.equal topic, false
+			assert.equal false, topic
 
 		it 'that has an invalid month', ->
 			topic = $.formance.validateDate 1, -11, 2013
-			assert.equal topic, false
+			assert.equal false, topic
 
 			topic = $.formance.validateDate 1, 13, 2013
-			assert.equal topic, false
+			assert.equal false, topic
 
 		it 'that has an invalid year', ->
 			topic = $.formance.validateDate 1, 12, -2013
-			assert.equal topic, false
+			assert.equal false, topic
 
 		it 'should not support year shorthand', ->
 			topic = $.formance.validateDate 1, 12, 13
-			assert.equal topic, false
+			assert.equal false, topic
 
 		it 'should fail if any value is NaN', ->
 			topic = $.formance.validateDate NaN, 12, 13
-			assert.equal topic, false
+			assert.equal false, topic
 
 			topic = $.formance.validateDate 1, NaN, 13
-			assert.equal topic, false
+			assert.equal false, topic
 
 			topic = $.formance.validateDate 1, 12, NaN
-			assert.equal topic, false
+			assert.equal false, topic
 
 
 	describe 'Parsing a date', ->
 
 		it 'should parse a date string', ->
 			topic = $.formance.dateVal('01 / 07 / 2013')
-			assert.deepEqual topic, {day: 1, month: 7, year: 2013}
+			assert.deepEqual {day: 1, month: 7, year: 2013}, topic
 
 		# it is up to the validator to determine if it is a legitimate date
 		it 'should parse if less than 8 digits', ->
 			topic = $.formance.dateVal '1 / 07 / 2013'
-			assert.deepEqual topic, {day: 1, month: 7, year: 2013}
+			assert.deepEqual {day: 1, month: 7, year: 2013}, topic
 
 			topic = $.formance.dateVal '01 / 07 / 201'
-			assert.deepEqual topic, {day: 1, month: 7, year: 201}
+			assert.deepEqual {day: 1, month: 7, year: 201}, topic
 
 		# it is up to the validator to determine if it is a legitimate date
 		it 'should parse if more than 8 digits', ->
 			topic = $.formance.dateVal '011 / 07 / 2013'
-			assert.deepEqual topic, {day: 11, month: 7, year: 2013}
+			assert.deepEqual {day: 11, month: 7, year: 2013}, topic
 
 			topic = $.formance.dateVal '01 / 072 / 2013'
-			assert.deepEqual topic, {day: 1, month: 72, year: 2013}
+			assert.deepEqual {day: 1, month: 72, year: 2013}, topic
 
 			topic = $.formance.dateVal '01 / 07 / 20133'
-			assert.deepEqual topic, {day: 1, month: 7, year: 20133}
+			assert.deepEqual {day: 1, month: 7, year: 20133}, topic
 
 		it 'should return NaN when it cannot parse', ->
 			topic = $.formance.dateVal('dd / 07 / 2013')
-			assert.equal !!topic.day, false
+			assert.equal false, !!topic.day
 
 			topic = $.formance.dateVal('01 / mm / 2013')
-			assert.equal !!topic.month, false
+			assert.equal false, !!topic.month
 
 			topic = $.formance.dateVal('01 / 07 / yyyy')  #not '01 / 07 / 20yy' will work
-			assert.equal !!topic.year, false
+			assert.equal false, !!topic.year
 
 			topic = $.formance.dateVal('            ')
-			assert.equal !!topic.day, false
-			assert.equal !!topic.month, false
-			assert.equal !!topic.year, false
+			assert.equal false, !!topic.day
+			assert.equal false, !!topic.month
+			assert.equal false, !!topic.year
