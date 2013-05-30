@@ -12,7 +12,7 @@ restrictOntarioDriversLicenseNumber = (e) ->
   value = $target.val() + char
   value = value.replace(/[^a-zA-Z\d]/g, '')
 
-  return false if value.length > 12
+  return false if value.length > 15
 
 formatOntarioDriversLicenseNumber = (e) ->
   char = String.fromCharCode(e.which)
@@ -23,7 +23,7 @@ formatOntarioDriversLicenseNumber = (e) ->
   val = old_val + char.toUpperCase()
 
   if old_val is ''
-    e.preventDefault
+    e.preventDefault()
     $target.val(val) if /^[A-Za-z]$/.test(val)
 
   else if /^[A-Za-z]\d{0,3}$/.test(old_val)
