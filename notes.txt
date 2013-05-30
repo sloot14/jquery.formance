@@ -12,4 +12,7 @@ cake watch
 
 
 
-coffee --join lib/formance.js --compile src/*.coffee
+coffee --join lib/formance.js --compile src/*
+
+
+how to run the tests inside the folders?
