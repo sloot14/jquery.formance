@@ -4,6 +4,7 @@ global.jQuery = $
 
 
 require('../lib/jquery.formance.js')
+require('../lib/fields/postal_code.js')
 
 
 describe 'postal_code.js', ->

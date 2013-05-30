@@ -4,6 +4,7 @@ global.jQuery = $
 
 
 require('../lib/jquery.formance.js')
+require('../lib/fields/ontario_photo_health_card_number.js')
 
 
 describe 'ontario_photo_health_card_number.js', ->

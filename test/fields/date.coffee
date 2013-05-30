@@ -4,6 +4,7 @@ global.jQuery = $
 
 
 require('../lib/jquery.formance.js')
+require('../lib/fields/date.js')
 
 
 describe 'date.js', ->

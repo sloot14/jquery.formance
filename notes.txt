@@ -9,3 +9,7 @@ echo $NODE_PATH
 cake build
 cake test
 cake watch
+
+
+
+coffee --join lib/formance.js --compile src/*.coffee

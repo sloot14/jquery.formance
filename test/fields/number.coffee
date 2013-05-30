@@ -4,6 +4,7 @@ global.jQuery = $
 
 
 require('../lib/jquery.formance.js')
+require('../lib/fields/number.js')
 
 
 describe 'number.js', ->
