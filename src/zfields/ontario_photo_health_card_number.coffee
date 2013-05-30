@@ -22,17 +22,25 @@ formatOntarioPhotoHealthCardNumber = (e) ->
   old_val = $target.val()
   val = old_val + char.toUpperCase()
 
-  if /^\d{4}$/.test(val)
+  if /^\d{0,3}$/.test(old_val)
     e.preventDefault()
-    $target.val("#{val} - ")
+    val = "#{val} - " if /^\d{4}$/.test(val)
+    $target.val(val) if /^\d{0,4}[\s|\-]*$/.test(val)
 
-  else if /^\d{4}[\s|\-]*\d{3}$/.test(val)
+  else if /^\d{4}[\s|\-]*\d{0,2}$/.test(old_val)
     e.preventDefault()
-    $target.val("#{val} - ")
+    val = "#{val} - " if /^\d{4}[\s|\-]*\d{3}$/.test(val)
+    $target.val(val) if /^\d{4}[\s|\-]*\d{0,3}[\s|\-]*$/.test(val)
 
-  else if /^\d{4}[\s|\-]*\d{3}[\s|\-]*d{3}$/.test(val) 
+  else if /^\d{4}[\s|\-]*\d{3}[\s|\-]*\d{0,2}$/.test(old_val)
     e.preventDefault()
-    $target.val("#{val} - ")
+    val = "#{val} - " if /^\d{4}[\s|\-]*\d{3}[\s|\-]*\d{3}$/.test(val)
+    $target.val(val) if /^\d{4}[\s|\-]*\d{3}[\s|\-]*\d{0,3}[\s|\-]*$/.test(val)
+
+  else if /^\d{4}[\s|\-]*\d{3}[\s|\-]*\d{3}[\s|\-]*[A-Za-z]{0,1}$/.test(old_val)
+    e.preventDefault()
+    $target.val(val) if /^\d{4}[\s|\-]*\d{3}[\s|\-]*\d{3}[\s|\-]*[A-Za-z]{0,2}$/.test(val)
+
 
 formatBackOntarioPhotoHealthCardNumber = (e) ->
    # If shift+backspace is pressed
@@ -51,17 +59,15 @@ formatBackOntarioPhotoHealthCardNumber = (e) ->
   if /\d(\s|\-)+$/.test(value)
     e.preventDefault()
     $target.val(value.replace(/\d(\s|\-)+$/, ''))
-  else if /\s\-\s?[A-Za-z\d]?$/.test(value)
-    e.preventDefault()
-    $target.val(value.replace(/\s\-\s?[A-Za-z\d]?$/, ''))
+
 
 formatPasteOntarioPhotoHealthCardNumber = (e) ->
   setTimeout =>
     $target = $(e.currentTarget)
     val = $target.val()
 
-    [full, first_four, second_three, third_three, last_two] = val.match(/^(\d{4})[\s|\-]*?(\d{3})[\s|\-]*?(\d{3})[\s|\-]*?([A-Za-z]{2})$/)  
-    $target.val("#{first_four} - #{second_three} - #{third_three} - #{last_two}")
+    [full, first4, second3, third3, last2] = val.match(/^(\d{4})[\s|\-]*(\d{3})[\s|\-]*(\d{3})[\s|\-]*([A-Za-z]{2})$/)  
+    $target.val("#{first4} - #{second3} - #{third3} - #{last2}")
 
 
 $.formance.fn.formatOntarioPhotoHealthCardNumber = ->
@@ -77,6 +83,5 @@ $.formance.validateOntarioPhotoHealthCardNumber = (val) ->
   val = val.replace(/[\s|\-]/g, '')
   return false unless /^[a-zA-Z\d]+$/.test()
 
-  regex = /^(\d{4})[\s|\-]*?(\d{3})[\s|\-]*?(\d{3})[\s|\-]*?([A-Za-z]{2})$/
+  regex = /^\d{4}[\s|\-]*\d{3}[\s|\-]*\d{3}[\s|\-]*[A-Za-z]{0,2}$/
   return regex.test(val)
-		
