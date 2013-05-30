@@ -1,4 +1,5 @@
 $ = jQuery
+hasTextSelected = $.formance.fn.hasTextSelected
 
 restrictPostalCode = (e) ->
   $target = $(e.currentTarget)
@@ -75,28 +76,24 @@ formatPastePostalCode = (e) ->
 
 
 
-$.fn.formance.postalCode =
 
-	format: ->
-		# $(this).formance.restrictAlphaNumeric()
-		@formatters('restrictAlphaNumeric')
-		@on('keypress', restrictOntarioPhotoHealthCardNumber)
-		@on('keypress', formatOntarioPhotoHealthCardNumber)
-		@on('keydown',  formatBackOntarioPhotoHealthCardNumber)
-		@on('paste', 	formatPasteOntarioPhotoHealthCardNumber)
-		this
+$.formance.fn.formatPostalCode = ->
+	@.formance('restrictAlphaNumeric')
+	@on('keypress', restrictPostalCode)
+	@on('keypress', formatPostalCode)
+	@on('keydown',  formatBackPostalCode)
+	@on('paste', 	formatPastePostalCode)
+	this
 
-	validate: ->
-		val = $(this).val()
+$.formance.validatePostalCode = (val) ->
+	return false unless val?
+	val = val.replace(/\s+/g, '')
+	return false unless /^[a-zA-Z\d]+$/.test(val)
 
-		return false unless val?
-		val = val.replace(/\s+/g, '')
-		return false unless /^[a-zA-Z\d]+$/.test(val)
-
-		# http://stackoverflow.com/questions/1146202/canada-postal-code-validation
-		# apparently some letters are restricted
-		# - first letter can't be D,I,O,Q,U,W,Z
-		# - second letter can't be D,I,O,Q,U
-		# - third letter can't be D,I,O,Q,U
-		val = val.replace(/[^a-zA-Z\d]/g, '') #\W allows certain special characters
-		/^[ABCEFGHJKLMNPRSTVXY][0-9][ABCEFGHJKLMNPRSTVWXYZ]\s?[0-9][ABCEFGHJKLMNPRSTVWXYZ][0-9]$/.test(val.toUpperCase())
+	# http://stackoverflow.com/questions/1146202/canada-postal-code-validation
+	# apparently some letters are restricted
+	# - first letter can't be D,I,O,Q,U,W,Z
+	# - second letter can't be D,I,O,Q,U
+	# - third letter can't be D,I,O,Q,U
+	val = val.replace(/[^a-zA-Z\d]/g, '') #\W allows certain special characters
+	/^[ABCEFGHJKLMNPRSTVXY][0-9][ABCEFGHJKLMNPRSTVWXYZ]\s?[0-9][ABCEFGHJKLMNPRSTVWXYZ][0-9]$/.test(val.toUpperCase())

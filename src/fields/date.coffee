@@ -1,4 +1,5 @@
 $ = jQuery
+hasTextSelected = $.formance.fn.hasTextSelected
 
 restrictDate = (e) ->
 	$target = $(e.currentTarget)
@@ -60,7 +61,7 @@ formatForwardSlash = (e) ->    # handles when the user hits '/'
 	else if parse_month.test(val)
 		[date, day, month] = val.match(parse_month)
 		if month isnt '0'
-		$target.val("#{day} / 0#{month} / ")
+			$target.val("#{day} / 0#{month} / ")
 
 formatBackDate = (e) ->
 	# If shift+backspace is pressed
@@ -84,33 +85,29 @@ formatBackDate = (e) ->
 		e.preventDefault()
 		$target.val(value.replace(/\s\/\s?\d?$/, ''))
 
-$.fn.formance.date =
 
-	format: ->
-		@formatters('restrictNumeric')
-		@on('keypress', restrictDate)
-		@on('keypress', formatDate)
-		@on('keypress', formatForwardSlash)
-		@on('keypress', formatForwardDate)
-		@on('keydown',  formatBackDate)
-		this
+$.formance.fn.formatDate = ->
+	@.formance('restrictNumeric')
+	@on('keypress', restrictDate)
+	@on('keypress', formatDate)
+	@on('keypress', formatForwardSlash)
+	@on('keypress', formatForwardDate)
+	@on('keydown',  formatBackDate)
+	this
 
-	validate: ->
-		val = $(this).val()
-		date = @parse(val)
-
-		return false if not date.day? or isNaN(date.day) or not date.month? or isNaN(date.month) or not date.year? or isNaN(date.year)
-		return false unless (0 < date.day <= 31) and (0 < date.month <= 12) and (1000 < date.year <= 10000) #can probably use better logic for 'valid' year
-		return true
+$.formance.validateDate = (day, month, year) ->
+	return false if not day? or isNaN(day) or not month? or isNaN(month) or not year? or isNaN(year)
+	return false unless (0 < day <= 31) and (0 < month <= 12) and (1000 < year <= 10000) #can probably use better logic for 'valid' year
+	return true
 
 
-	parse: (dateString) ->
-		[day, month, year] = if dateString? then dateString.replace(/\s/g, '').split('/', 3) else [NaN, NaN, NaN]
+$.formance.dateVal = (dateString) ->
+	[day, month, year] = if dateString? then dateString.replace(/\s/g, '').split('/', 3) else [NaN, NaN, NaN]
 
-		day   = parseInt(day, 10)
-		month = parseInt(month, 10)
-		year  = parseInt(year, 10)
+	day   = parseInt(day, 10)
+	month = parseInt(month, 10)
+	year  = parseInt(year, 10)
 
-		return day: day, month: month, year: year
+	return day: day, month: month, year: year
 
 

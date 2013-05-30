@@ -2,16 +2,12 @@ require('./jquery.payment')
 
 $ = jQuery
 
-$.fn.formance.creditCardExpiry =
+$.formance.fn.formatCreditCardExpiry = ->
+	this.payment('formatCardExpiry')
+	this
 
-	format: ->
-		this.payment('formatCardExpiry')
-		this
+$.formance.validateCreditCardExpiry = (month, year) ->
+	return $.payment.validateCardExpiry(month, year)
 
-	validate: ->
-		val = $(this).val()
-		expiry = @parse(val)
-		return $.payment.validateCardExpiry(expiry.month, expiry.year)
-
-	parse: (expiryString) ->
-		$.payment.cardExpiryVal(expiryString)
+$.formance.creditCardExpiryVal = (expiryString) ->
+	$.payment.cardExpiryVal(expiryString)

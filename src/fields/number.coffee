@@ -1,11 +1,8 @@
 $ = jQuery
 
-$.fn.formance.number =
+$.formance.fn.formatNumber = ->
+	@.formance('restrictNumeric')
+	this
 
-	format: ->
-		@formatters('restrictNumeric')
-		this
-
-	validate: ->
-		val = $(this).val()
-		return /^\d+$/.test(val)
+$.formance.validateNumber = (val) ->
+	return /^\d+$/.test(val)

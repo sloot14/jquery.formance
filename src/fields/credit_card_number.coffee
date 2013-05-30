@@ -2,12 +2,12 @@ require('./jquery.payment')
 
 $ = jQuery
 
-$.fn.formance.creditCardNumber =
+$.formance.fn.formatCreditCardNumber = ->
+	this.payment('formatCardNumber')
+	this
 
-	format: ->
-		this.payment('formatCardNumber')
-		this
+$.formance.validateCreditCardNumber = (num) ->
+	return $.payment.validateCardNumber(num)
 
-	validate: ->
-		val = $(this).val()
-		return $.payment.validateCardNumber(num)
+$.formance.creditCardType = (num) ->
+	return $.payment.cardType(num)

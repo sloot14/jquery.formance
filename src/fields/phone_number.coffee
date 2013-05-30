@@ -1,4 +1,5 @@
 $ = jQuery
+hasTextSelected = $.formance.fn.hasTextSelected
 
 reFormatPhoneNumber = (phoneNumberString) ->
   [phoneNumber, areaCode, first3, last4] = phoneNumberString.replace(/\D/g, '').match(/^(\d{0,3})?(\d{0,3})?(\d{0,4})?$/)
@@ -72,21 +73,18 @@ formatPastePhoneNumber = (e) ->
     $target.val(text)
 
 
-$.fn.formance.phoneNumber =
+$.formance.fn.formatPhoneNumber = ->
+  @.formance('restrictNumeric')
+  @on('keypress', restrictPhoneNumber)
+  @on('keypress', formatPhoneNumber)
+  @on('keydown',  formatBackPhoneNumber)
+  @on('paste',  formatPastePhoneNumber)
+  this  
 
-	format: ->
-		@formatters('restrictNumeric')
-		@on('keypress', restrictPhoneNumber)
-		@on('keypress', formatPhoneNumber)
-		@on('keydown',  formatBackPhoneNumber)
-		@on('paste', 	formatPastePhoneNumber)
-		this	
+$.formance.validatePhoneNumber = (val) ->
+  return false unless val?
+  val = val.replace(/\(|\)|\s+|-/g, '')
+  return false unless /^\d+$/.test(val)
 
-	validate: ->
-		val = $(this).val()
-
-		val = val.replace(/\(|\)|\s+|-/g, '')
-		return false unless /^\d+$/.test(val)
-
-		# [areaCode, first3, last4] = val.match(/\d+/g)
-		return val.replace(/\D/g, '').length is 10 # replaces all non digits [^0-9] with ''
+  # [areaCode, first3, last4] = val.match(/\d+/g)
+  return val.replace(/\D/g, '').length is 10 # replaces all non digits [^0-9] with ''

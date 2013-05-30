@@ -1,5 +1,5 @@
 $ = jQuery
-
+hasTextSelected = $.formance.fn.hasTextSelected
 
 restrictOntarioPhotoHealthCardNumber = (e) ->
   $target = $(e.currentTarget)
@@ -64,23 +64,19 @@ formatPasteOntarioPhotoHealthCardNumber = (e) ->
     $target.val("#{first_four} - #{second_three} - #{third_three} - #{last_two}")
 
 
-$.fn.formance.ontarioPhotoHealthCardNumber =
+$.formance.fn.formatOntarioPhotoHealthCardNumber = ->
+    @.formance('restrictAlphaNumeric')
+    @on('keypress', restrictOntarioPhotoHealthCardNumber)
+    @on('keypress', formatOntarioPhotoHealthCardNumber)
+    @on('keydown',  formatBackOntarioPhotoHealthCardNumber)
+    @on('paste',  formatPasteOntarioPhotoHealthCardNumber)
+    this
 
-	format: ->
-		@formatters('restrictAlphaNumeric')
-		@on('keypress', restrictOntarioPhotoHealthCardNumber)
-		@on('keypress', formatOntarioPhotoHealthCardNumber)
-		@on('keydown',  formatBackOntarioPhotoHealthCardNumber)
-		@on('paste', 	formatPasteOntarioPhotoHealthCardNumber)
-		this
+$.formance.validateOntarioPhotoHealthCardNumber = (val) ->
+  return false unless val?
+  val = val.replace(/[\s|\-]/g, '')
+  return false unless /^[a-zA-Z\d]+$/.test()
 
-	validate: ->
-		val = $(this).val()
-
-		return false unless val?
-		val = val.replace(/[\s|\-]/g, '')
-		return false unless /^[a-zA-Z\d]+$/.test()
-
-		regex = /^(\d{4})[\s|\-]*?(\d{3})[\s|\-]*?(\d{3})[\s|\-]*?([A-Za-z]{2})$/
-		return regest.test(val)
-
+  regex = /^(\d{4})[\s|\-]*?(\d{3})[\s|\-]*?(\d{3})[\s|\-]*?([A-Za-z]{2})$/
+  return regex.test(val)
+		
