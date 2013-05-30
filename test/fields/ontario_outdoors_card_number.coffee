@@ -39,6 +39,16 @@ describe 'ontario_outdoors_card_number.js', ->
 
 			assert.equal '', $oocn.val()
 
+		# it 'should erase 708158 on backspace', ->
+		# 	$oocn = $('<input type=text>').formance('formatOntarioOutdoorsCardNumber')
+		# 	$oocn.val('708158 ')
+
+		# 	e = $.Event('keypress')
+		# 	e.which = 8 # backspace
+		# 	$oocn.trigger(e)
+
+		# 	assert.equal '', $oocn.val()
+
 	describe 'Validating an Ontario outdoors card number', ->
 
 		it 'should fail if empty', ->

@@ -46,9 +46,9 @@ formatBackOntarioOutdoorsCardNumber = (e) ->
   return if $target.prop('selectionStart')? and
     $target.prop('selectionStart') isnt value.length
 
-  if /\d\s+$/.test(value)
+  if /708158\s+$/.test(value)
     e.preventDefault()
-    $target.val(value.replace(/\d\s+$/, ''))
+    $target.val(value.replace(/708158\s+$/, ''))
 
 
 formatPasteOntarioOutdoorsCardNumber = (e) ->
