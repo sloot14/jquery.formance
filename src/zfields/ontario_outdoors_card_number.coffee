@@ -61,7 +61,7 @@ formatPasteOntarioOutdoorsCardNumber = (e) ->
 
 
 $.formance.fn.formatOntarioOutdoorsCardNumber = ->
-    @.formance('restrictAlphaNumeric')
+    @.formance('restrictNumeric')
     @on('keypress', restrictOntarioOutdoorsCardNumber)
     @on('keypress', formatOntarioOutdoorsCardNumber)
     @on('keydown',  formatBackOntarioOutdoorsCardNumber)
