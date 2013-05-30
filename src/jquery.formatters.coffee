@@ -214,7 +214,6 @@ formatPastePhoneNumber = (e) ->
     text = reFormatPhoneNumber(val)
     $target.val(text)
 
-
 # POSTAL CODE FUNCTIONS
 
 restrictPostalCode = (e) ->
@@ -290,6 +289,7 @@ formatPastePostalCode = (e) ->
     [full, first_part, second_part] = val.match(/^([ABCEFGHJKLMNPRSTVXY][0-9][ABCEFGHJKLMNPRSTVWXYZ])\s?([0-9][ABCEFGHJKLMNPRSTVWXYZ][0-9])$/)
     $target.val("#{first_part} #{second_part}")
 
+
 # FORMATTERS
 
 $.formatters.fn.formatCardNumber = ->
@@ -318,6 +318,14 @@ $.formatters.fn.formatDate = ->
 
 $.formatters.fn.formatNumber = ->
   @formatters('restrictNumeric')
+  this
+
+$.formatters.fn.formatOntarioHealthCardNumber = ->
+  @formatters('restrictAlphaNumeric')
+  @on('keypress', restrictOntarioPhotoHealthCardNumber)
+  @on('keypress', formatOntarioPhotoHealthCardNumber)
+  @on('keydown',  formatBackOntarioPhotoHealthCardNumber)
+  @on('paste', formatPasteOntarioPhotoHealthCardNumber)
   this
 
 $.formatters.fn.formatPhoneNumber = ->

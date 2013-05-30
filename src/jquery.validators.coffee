@@ -35,6 +35,16 @@ $.validators.validateNumber = (num) ->
 	return /^\d+$/.test(num)
 
 
+$.validators.validateOntarioPhotoHealthCardNumber = (str) ->
+	return false unless str?
+
+	# 1234 - 123 - 123 - AB
+	regex = /^(\d{4})[\s|\-]*?(\d{3})[\s|\-]*?(\d{3})[\s|\-]*?([A-Za-z]{2})$/
+	string = str.replace(/[^a-zA-Z\d]/g, '')
+
+	return regex.test(str)
+
+
 #can't handle extensions for now
 $.validators.validatePhoneNumber = (phone_string) ->
 	phone_string = phone_string.replace(/\(|\)|\s+|-/g, '')

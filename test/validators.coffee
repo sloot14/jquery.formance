@@ -30,9 +30,6 @@ describe 'validators.js', ->
       assert.equal topic, false
 
 
-
-
-
   describe 'Validating a date', ->
     
     it 'that is a valid day', ->
@@ -99,14 +96,42 @@ describe 'validators.js', ->
 
 
 
+  describe 'Validating an ontario photo health card number', ->
+    it 'should fail if empty', ->
+      topic = $.validators.validateOntarioPhotoHealthCardNumber ''
+      assert.equal topic, false
+
+    it 'should fail ig it is a bunch of space', ->
+      topic = $.validators.validateOntarioPhotoHealthCardNumber '             '
+      assert.equal topic, false
+
+    it 'should succeed if valid', ->
+      topic = $.validators.validateOntarioPhotoHealthCardNumber '1234123123AB'
+      assert.equal topic, true
+    
+    it 'has dashes and spaces but is valid', ->
+      topic = $.validators.validateOntarioPhotoHealthCardNumber '1234 - 123 - 123 - AB'
+      assert.equal topic, true
+
+    it 'should fail if more than 12 characters', ->
+      topic = $.validators.validateOntarioPhotoHealthCardNumber '1234 - 123 - 123 - ABC'
+      assert.equal topic, false
+      topic = $.validators.validateOntarioPhotoHealthCardNumber '1234 - 1233 - 123 - AB'
+      assert.equal topic, false
+
+    it 'should fail with non alphanumeric characters', ->
+      topic = $.validators.validateOntarioPhotoHealthCardNumber '1234; - 123 - ;/123 -/ AB'
+      assert.equal topic, false
+
+
+
   describe 'Validating a phone number', ->
     it 'should fail if empty', ->
       topic = $.validators.validatePhoneNumber ''
       assert.equal topic, false
 
     it 'should fail if it is a bunch of spaces', ->
-      topic = $.validators.validatePhoneNumber '                  '
-      assert.equal topic, false
+      topic = $.validators.validatePhoneNumber 
 
     it 'should succeed if valid', ->
       topic = $.validators.validatePhoneNumber '6137384446'

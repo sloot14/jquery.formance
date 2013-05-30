@@ -90,6 +90,54 @@ describe 'formatters.js', ->
 			assert.equal $number.val(), '123'
 
 
+
+
+	describe 'formatOntarioHealthCardNumber', ->
+		it 'should format first four digits correctly', ->
+			$ophc_number = $('<input type=text>').formatters('formatOntarioHealthCardNumber')
+			$ophc_number.val('123')
+
+			e = $.Event('keypress')
+			e.which = '52'
+			$ophc_number.trigger(e)
+
+			assert.equal $ophc_number.val(), '1234 - '
+
+		it 'should format second three correctly', ->
+			$ophc_number = $('<input type=text>').formatters('formatOntarioHealthCardNumber')
+			$ophc_number.val('1234 - 12')
+
+			e = $.Event('keypress')
+			e.which = '51' # '3'
+			$ophc_number.trigger(e)
+
+			assert.equal $ophc_number.val(), '1234 - 123 - '
+
+		it 'should format third three correctly', ->
+			$ophc_number = $('<input type=text>').formatters('formatOntarioHealthCardNumber')
+			$ophc_number.val('1234 - 123 - 12')
+
+			console.log 'herere ------------- '
+			console.log $ophc_number.val()
+
+			e = $.Event('keypress')
+			e.which = '51' # '3'
+			$ophc_number.trigger(e)
+
+
+			console.log $ophc_number.val()
+
+
+			assert.equal $ophc_number.val(), '1234 - 123 - 123 - '
+
+		# it 'should only allow alphanumeric characters', ->
+
+		# it 'should only allow letters for last 2 characters', -> 
+
+		# add tests for backspacing
+
+
+
 	describe 'formatPhoneNumber', ->
 		it 'should format first digit correctly', ->
 			$phone_number = $('<input type=text>').formatters('formatPhoneNumber')
@@ -110,7 +158,7 @@ describe 'formatters.js', ->
 
 			assert.equal $phone_number.val(), '(614) '
 
-		it 'should format firs three correctly', ->
+		it 'should format first three correctly', ->
 			$phone_number = $('<input type=text>').formatters('formatPhoneNumber')
 			$phone_number.val('(614) 12')
 
