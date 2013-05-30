@@ -2,7 +2,7 @@
 <html>
 <head>
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-  <script src="../lib/jquery.payment.js"></script>
+  <script src="../lib/formance.js"></script>
 
   <style type="text/css" media="screen">
     input.invalid {
@@ -22,21 +22,21 @@
 
   <script>
     jQuery(function($){
-      $('[data-numeric]').payment('restrictNumeric');
-      $('.cc-number').payment('formatCardNumber');
-      $('.cc-exp').payment('formatCardExpiry');
-      $('.cc-cvc').payment('formatCardCVC');
+      $('[data-numeric]').formance('restrictNumeric');
+      $('.cc-number').formance('formatCreditCardNumber');
+      $('.cc-exp').formance('formatCreditCardExpiry');
+      $('.cc-cvc').formance('formatCreditCardCVC');
 
       $('form').submit(function(e){
         e.preventDefault();
         $('input').removeClass('invalid');
         $('.validation').removeClass('passed failed');
 
-        var cardType = $.payment.cardType($('.cc-number').val());
+        var cardType = $.formance.cardType($('.cc-number').val());
 
-        $('.cc-number').toggleClass('invalid', !$.payment.validateCardNumber($('.cc-number').val()));
-        $('.cc-exp').toggleClass('invalid', !$.payment.validateCardExpiry($('.cc-exp').payment('cardExpiryVal')));
-        $('.cc-cvc').toggleClass('invalid', !$.payment.validateCardCVC($('.cc-cvc').val(), cardType));
+        $('.cc-number').toggleClass('invalid', !$.formance.validateCreditCardNumber($('.cc-number').val()));
+        $('.cc-exp').toggleClass('invalid', !$.formance.validateCreditCardExpiry($('.cc-exp').formance('cardExpiryVal')));
+        $('.cc-cvc').toggleClass('invalid', !$.formance.validateCreditCardCVC($('.cc-cvc').val(), cardType));
 
         if ( $('input.invalid').length ) {
           $('.validation').addClass('failed');

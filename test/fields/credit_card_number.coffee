@@ -3,8 +3,9 @@ $      = require('jquery')
 global.jQuery = $
 
 
-require('../lib/jquery.formance.js')
-require('../lib/fields/credit_card_number.js')
+require('../lib/formance.js')
+# require('../lib/jquery.formance.js')
+# require('../lib/fields/credit_card_number.js')
 
 
 describe 'credit_card_number.js', ->

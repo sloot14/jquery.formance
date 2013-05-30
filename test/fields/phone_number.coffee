@@ -2,9 +2,9 @@ assert = require('assert')
 $      = require('jquery')
 global.jQuery = $
 
-
-require('../lib/jquery.formance.js')
-require('../lib/fields/phone_number.js')
+require('../lib/formance.js')
+# require('../lib/jquery.formance.js')
+# require('../lib/fields/phone_number.js')
 
 
 describe 'phone_number.js', ->

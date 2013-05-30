@@ -2,8 +2,8 @@ assert = require('assert')
 $      = require('jquery')
 global.jQuery = $
 
-
-require('../lib/jquery.formance.js')
+require('../lib/formance.js')
+# require('../lib/formance.js')
 
 
 describe 'jquery.formance.js', ->
@@ -19,8 +19,6 @@ describe 'jquery.formance.js', ->
 			e.which = 52 # '4'
 			$field.trigger(e)
 	
-			console.log '"' + $field.val() + '"'
-
 			assert.equal $field.val(), '1234'
 
 		it 'should restrict letters from being entered', ->

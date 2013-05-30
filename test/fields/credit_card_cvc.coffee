@@ -2,9 +2,9 @@ assert = require('assert')
 $      = require('jquery')
 global.jQuery = $
 
-
-require('../lib/jquery.formance.js')
-require('../lib/fields/credit_card_cvc.js')
+require('../lib/formance.js')
+# require('../lib/jquery.formance.js')
+# require('../lib/fields/credit_card_cvc.js')
 
 
 describe 'credit_card_cvc.js', ->

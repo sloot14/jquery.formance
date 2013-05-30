@@ -5,11 +5,7 @@ $.fn.formance = (method, args...) ->
   $.formance.fn[method].apply(this, args)
 
 restrictNumeric = (e) ->
-
-  console.log 'restrictNumeric triggered'
   $target = $(e.target)
-  console.log '"' + $target.val() + '"'
-  return true
 
   # Key event is for a browser shortcut
   return true if e.metaKey or e.ctrlKey
@@ -24,18 +20,12 @@ restrictNumeric = (e) ->
   return true if e.which < 33
 
   input = String.fromCharCode(e.which)
-
-  console.log !!/[\d\s]/.test(input)
 
   # Char is a number or a space
   !!/[\d\s]/.test(input)
 
-restrictAlphaNumeric = (e) ->
-  
-  console.log 'restrictAlphaNumeric triggered'
+restrictAlphaNumeric = (e) ->  
   $target = $(e.target)
-  console.log '"' + $target.val() + '"'
-  return true
 
   # Key event is for a browser shortcut
   return true if e.metaKey or e.ctrlKey
@@ -50,8 +40,6 @@ restrictAlphaNumeric = (e) ->
   return true if e.which < 33
 
   input = String.fromCharCode(e.which)
-
-  console.log !!/[\d\sA-Za-z]/.test(input)
 
   # Char is a number or a space
   !!/[\d\sA-Za-z]/.test(input)
@@ -68,12 +56,10 @@ hasTextSelected = ($target) ->
 
 
 $.formance.fn.restrictNumeric = ->
-  console.log 'Setting up keypress listener for restrictNumeric'
   @on('keypress', restrictNumeric)
   this
 
 $.formance.fn.restrictAlphaNumeric = ->
-  console.log 'Setting up keypress listener for restrictAlphaNumeric'
   @on('keypress', restrictAlphaNumeric)
   this
 
