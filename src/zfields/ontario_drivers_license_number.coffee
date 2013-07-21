@@ -61,7 +61,7 @@ formatPasteOntarioDriversLicenseNumber = (e) ->
     $target = $(e.currentTarget)
     val = $target.val()
 
-    [full, first5, middle5, last5] = val.match(/^([A-Za-z\d]{5})[\s|\-]*(\d{5})[\s|\-]*(\d{5})$/)  
+    [full, first5, middle5, last5] = val.match(/^([A-Za-z\d]{5})[\s|\-]*(\d{5})[\s|\-]*(\d{5})$/)
     $target.val("#{first5} - #{middle5} - #{last5}")
 
 

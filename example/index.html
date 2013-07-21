@@ -1,57 +1,18 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-  <script src="../lib/formance.js"></script>
-
-  <style type="text/css" media="screen">
-    input.invalid {
-      border: 2px solid red;
-    }
-
-    .validation.failed:after {
-      color: red;
-      content: 'Validation failed';
-    }
-
-    .validation.passed:after {
-      color: green;
-      content: 'Validation passed';
-    }
-  </style>
-
-  <script>
-    jQuery(function($){
-      $('[data-numeric]').formance('restrictNumeric');
-      $('.cc-number').formance('formatCreditCardNumber');
-      $('.cc-exp').formance('formatCreditCardExpiry');
-      $('.cc-cvc').formance('formatCreditCardCVC');
-      $('.ontario_outdoors_card_number').formance('formatOntarioOutdoorsCardNumber');
-
-      $('form').submit(function(e){
-        e.preventDefault();
-        $('input').removeClass('invalid');
-        $('.validation').removeClass('passed failed');
-
-        var cardType = $.formance.cardType($('.cc-number').val());
-
-        $('.cc-number').toggleClass('invalid', !$.formance.validateCreditCardNumber($('.cc-number').val()));
-        $('.cc-exp').toggleClass('invalid', !$.formance.validateCreditCardExpiry($('.cc-exp').formance('cardExpiryVal')));
-        $('.cc-cvc').toggleClass('invalid', !$.formance.validateCreditCardCVC($('.cc-cvc').val(), cardType));
-
-        if ( $('input.invalid').length ) {
-          $('.validation').addClass('failed');
-        } else {
-          $('.validation').addClass('passed');
-        }
-      });
-    });
-  </script>
-
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+  <script src="../lib/jquery.formance.js"></script>
 </head>
 <body>
 
   <form novalidate autocomplete="on">
+    <h2>North America Phone Number formatting '(111) 111 - 111'</h2>
+    <input type="text" class="phone_number" placeholder="Phone Number">
+
+    <h2>Canadian Postal Code 'A1A 1A1'</h2>
+    <input type="text" class="canadian_postal_code" placeholder="Postal Code">
+
     <h2>Credit Card number formatting</h2>
     <input type="text" class="cc-number" pattern="\d*" x-autocompletetype="cc-number" placeholder="Credit Card number" required>
 
@@ -62,14 +23,10 @@
     <input type="text" class="cc-cvc" pattern="\d*" x-autocompletetype="cc-csc" placeholder="Security code" required  autocomplete="off">
 
     <h2>Restrict Numeric</h2>
-    <input type="text" data-numeric>
+    <input type="text" placeholder="Only Digits" data-numeric>
 
     <h2>Ontario outdoors card number formatting </h2>
-    <input type="text" class="ontario_outdoors_card_number" pattern="\d*" placeholder="Outdoors Card Number">
-
-    <h2 class="validation"></h2>
-
-    <button type="submit">Submit</button>
+    <input type="text" class="ontario_outdoors_card_number" placeholder="Outdoors Card Number">
   </form>
 
 </body>

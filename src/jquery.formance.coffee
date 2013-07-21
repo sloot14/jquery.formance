@@ -1,5 +1,5 @@
-$          		= jQuery
-$.formance	  = {}
+$             = jQuery
+$.formance    = {}
 $.formance.fn = {}
 $.fn.formance = (method, args...) ->
   $.formance.fn[method].apply(this, args)
@@ -24,7 +24,7 @@ restrictNumeric = (e) ->
   # Char is a number or a space
   !!/[\d\s]/.test(input)
 
-restrictAlphaNumeric = (e) ->  
+restrictAlphaNumeric = (e) ->
   $target = $(e.target)
 
   # Key event is for a browser shortcut
@@ -41,7 +41,7 @@ restrictAlphaNumeric = (e) ->
 
   input = String.fromCharCode(e.which)
 
-  # Char is a number or a space
+  # Char is a number, letter or space
   !!/[\d\sA-Za-z]/.test(input)
 
 hasTextSelected = ($target) ->
