@@ -82,12 +82,12 @@ describe 'date.js', ->
 
         it 'that is a valid day', ->
             date = new Date()
-            topic = $.formance.validateDate date.getDay(), date.getMonth(), date.getFullYear()
+            topic = $.formance.validateDate date.getDate(), date.getMonth(), date.getFullYear()
             assert.equal true, topic
 
         it 'that has string numbers', ->
             date = new Date()
-            topic = $.formance.validateDate date.getDay()+'', date.getMonth()+'', date.getFullYear()+''
+            topic = $.formance.validateDate date.getDate()+'', date.getMonth()+'', date.getFullYear()+''
             assert.equal true, topic
 
         it 'that has an invalid day', ->
