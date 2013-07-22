@@ -124,7 +124,7 @@ reFormatCardNumber = (e) ->
   setTimeout =>
     $target = $(e.currentTarget)
     value   = $target.val()
-    value   = $.payment.formatCardNumber(value)
+    value   = $.formance.formatCardNumber(value)
     $target.val(value)
 
 formatCardNumber = (e) ->
@@ -187,7 +187,7 @@ formatBackCardNumber = (e) ->
 setCardType = (e) ->
   $target  = $(e.currentTarget)
   val      = $target.val()
-  cardType = $.payment.cardType(val) or 'unknown'
+  cardType = $.formance.creditCardType(val) or 'unknown'
 
   unless $target.hasClass(cardType)
     allTypes = (card.type for card in cards)
