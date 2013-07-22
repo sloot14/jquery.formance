@@ -4,11 +4,11 @@
 {log, error} = console; print = log
 fs = require 'fs'
 
-run = (name, args...) ->
-    proc = spawn(name, args)
+run = (cmd, options=[], callback) ->
+    proc = spawn cmd, options
     proc.stdout.on 'data', (buffer) -> print buffer if buffer = buffer.toString().trim()
     proc.stderr.on 'data', (buffer) -> error buffer if buffer = buffer.toString().trim()
-    proc.on 'exit', (status) -> process.exit(1) if status isnt 0
+    proc.on 'exit', (status) -> callback?() if status is 0
 
 shell = (cmds, callback) ->
     cmds = [cmds] if Object::toString.apply(cmds) isnt '[object Array]'
@@ -17,23 +17,40 @@ shell = (cmds, callback) ->
         error stderr.trim() if err
         callback() if callback
 
+build = (watch, callback) ->
+    if typeof watch is 'function'
+        callback = watch
+        watch = false
+
+    options = ['-j', 'lib/jquery.formance.js', '-c', 'src']
+    options.unshift '-w' if watch
+    run 'coffee', options, callback
+
+test = (bail, callback) ->
+    if typeof bail is 'function'
+        callback = bail
+        bail = false
+
+     options =  ['--recursive', '--compilers', 'coffee:coffee-script', '-c']
+     options.unshift '-b' if bail
+     run 'mocha', options, callback
 
 # task 'coffee', 'Build lib/ from src/', ->
 #     run 'coffee', '-co', 'lib', 'src'
 
 task 'coffee', 'Builds lib/jquery.formance.js from src/', ->
-    run 'coffee', '-j', 'lib/jquery.formance.js', '-c', 'src'
+    build false
 
 task 'watch', 'Watch src/ for changes', ->
-    run 'coffee', '-wj', 'lib/jquery.formance.js', '-c', 'src'
+    build true
 
 task 'test', 'Run tests', ->
-    invoke 'coffee'
-    run 'mocha', '--recursive', '--compilers', 'coffee:coffee-script', '-c'
+    build ->
+        test false
 
 task 'bail', 'Runs tests and bails on first error', ->
-    invoke 'coffee'
-    run 'mocha', '--recursive', '--compilers', 'coffee:coffee-script', '-c', '-b'
+    build ->
+        test true
 
 task 'minify', 'Minifies any js file in the lib/ folder.', ->
     dir = 'lib'
@@ -51,5 +68,5 @@ task 'minify', 'Minifies any js file in the lib/ folder.', ->
             shell "uglifyjs --output #{dir}/#{newname} #{dir}/#{file}"
 
 task 'build', 'Builds lib/jquery.formance.js and minifies it.', ->
-    invoke 'coffee'
-    invoke 'minify'
+    build ->
+        invoke 'minify'
