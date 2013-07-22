@@ -39,7 +39,7 @@ formatForwardExpiry = (e) ->
   if /^\d\d$/.test(val)
     $target.val("#{val} / ")
 
-formatForwardSlash = (e) ->
+formatForwardSlashExpiry = (e) ->
   slash = String.fromCharCode(e.which)
   return unless slash is '/'
 
@@ -77,7 +77,7 @@ $.formance.fn.formatCreditCardExpiry = ->
 	@.formance('restrictNumeric')
 	@on('keypress', restrictExpiry)
 	@on('keypress', formatExpiry)
-	@on('keypress', formatForwardSlash)
+	@on('keypress', formatForwardSlashExpiry)
 	@on('keypress', formatForwardExpiry)
 	@on('keydown',  formatBackExpiry)
 	this
