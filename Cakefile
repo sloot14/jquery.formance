@@ -28,7 +28,12 @@ task 'watch', 'Watch src/ for changes', ->
     run 'coffee', '-wj', 'lib/jquery.formance.js', '-c', 'src'
 
 task 'test', 'Run tests', ->
+    invoke 'coffee'
     run 'mocha', '--recursive', '--compilers', 'coffee:coffee-script', '-c'
+
+task 'bail', 'Runs tests and bails on first error', ->
+    invoke 'coffee'
+    run 'mocha', '--recursive', '--compilers', 'coffee:coffee-script', '-c', '-b'
 
 task 'minify', 'Minifies any js file in the lib/ folder.', ->
     dir = 'lib'

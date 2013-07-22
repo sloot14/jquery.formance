@@ -79,7 +79,7 @@ $.formance.fn.formatPhoneNumber = ->
   @on('keypress', formatPhoneNumber)
   @on('keydown',  formatBackPhoneNumber)
   @on('paste',  formatPastePhoneNumber)
-  this  
+  this
 
 $.formance.validatePhoneNumber = (val) ->
   return false unless val?

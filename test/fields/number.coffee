@@ -12,17 +12,17 @@ describe 'number.js', ->
             $number = $('<input type=text>').formance('formatNumber')
             $number.val('123')
 
-            e = $.Event('keypress');
+            e = $.Event('keypress')
             e.which = 52 # '4'
             $number.trigger(e)
 
-            assert.equal '1234', $number.val()
+            assert.equal $number.val(), '1234'
 
         it 'should not allow non-digits', ->
             $number = $('<input type=text>').formance('formatNumber')
             $number.val('123')
 
-            e = $.Event('keypress');
+            e = $.Event('keypress')
             e.which = 100 # 'd'
             $number.trigger(e)
 
