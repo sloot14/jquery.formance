@@ -3,6 +3,17 @@
 <head>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
   <script src="../lib/jquery.formance.js"></script>
+  <script>
+    jQuery(function($){
+      $('input[data-numeric]').formance('formatNumber');
+      $('.cc-number').formance('formatCreditCardNumber');
+      $('.cc-exp').formance('formatCreditCardExpiry');
+      $('.cc-cvc').formance('formatCreditCardCVC');
+      $('.phone_number').formance('formatPhoneNumber');
+      $('.canadian_postal_code').formance('formatPostalCode');
+      $('.ontario_outdoors_card_number').formance('formatOntarioOutdoorsCardNumber');
+    });
+  </script>
 </head>
 <body>
 
