@@ -11,7 +11,7 @@ describe 'credit_card_expiry.js', ->
         it 'should format month shorthand correctly', ->
             $expiry = $('<input type=text>').formance('formatCreditCardExpiry')
 
-            e = $.Event('keypress');
+            e = $.Event('keypress')
             e.which = 52 # '4'
             $expiry.trigger(e)
 
@@ -21,7 +21,7 @@ describe 'credit_card_expiry.js', ->
             $expiry = $('<input type=text>').formance('formatCreditCardExpiry')
             $expiry.val('1')
 
-            e = $.Event('keypress');
+            e = $.Event('keypress')
             e.which = 47 # '/'
             $expiry.trigger(e)
 
@@ -31,7 +31,7 @@ describe 'credit_card_expiry.js', ->
             $expiry = $('<input type=text>').formance('formatCreditCardExpiry')
             $expiry.val('1')
 
-            e = $.Event('keypress');
+            e = $.Event('keypress')
             e.which = 100 # 'd'
             $expiry.trigger(e)
 
