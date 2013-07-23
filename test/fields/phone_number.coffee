@@ -53,34 +53,33 @@ describe 'phone_number.js', ->
     describe 'Validating a phone number', ->
 
         it 'should fail if empty', ->
-            topic = $.formance.validatePhoneNumber ''
-            assert.equal false, topic
+            $phone_number = $('<input type=text>').val('')
+            assert.equal false, $phone_number.formance('validatePhoneNumber')
 
         it 'should fail if it is a bunch of spaces', ->
-            topic = $.formance.validatePhoneNumber '                  '
-            assert.equal false, topic
+            $phone_number = $('<input type=text>').val('                ')
+            assert.equal false, $phone_number.formance('validatePhoneNumber')
 
         it 'should succeed if valid', ->
-            topic = $.formance.validatePhoneNumber '6137384446'
-            assert.equal true, topic
+            $phone_number = $('<input type=text>').val('6137384446')
+            assert.equal true, $phone_number.formance('validatePhoneNumber')
 
         it 'has spaces but is valid', ->
-            topic = $.formance.validatePhoneNumber '613 738 4446'
-            assert.equal true, topic
+            $phone_number = $('<input type=text>').val('613 738 4446')
+            assert.equal true, $phone_number.formance('validatePhoneNumber')
 
         it 'has brackets and dashes but is valid', ->
-            topic = $.formance.validatePhoneNumber '(613) 738 - 4446'
-            assert.equal true, topic
+            $phone_number = $('<input type=text>').val('(613) 738 - 4446')
+            assert.equal true, $phone_number.formance('validatePhoneNumber')
 
         it 'should fail if more than 10 digits', ->
-            topic = $.formance.validatePhoneNumber '(123) 456 - 78901'
-            assert.equal false, topic
+            $phone_number = $('<input type=text>').val('(123) 456 - 78901')
+            assert.equal false, $phone_number.formance('validatePhoneNumber')
 
         it 'should fail if less than 10 digits', ->
-            topic = $.formance.validatePhoneNumber '(123) 456 - 789'
-            assert.equal false, topic
+            $phone_number = $('<input type=text>').val('(123) 456 - 789')
+            assert.equal false, $phone_number.formance('validatePhoneNumber')
 
         it 'should fail with non digits', ->
-            topic = $.formance.validatePhoneNumber '(123) er456 - 1232'
-            assert.equal false, topic
-
+            $phone_number = $('<input type=text>').val('(123) er456 - 789')
+            assert.equal false, $phone_number.formance('validatePhoneNumber')
