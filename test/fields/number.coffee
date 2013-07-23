@@ -32,17 +32,17 @@ describe 'number.js', ->
     describe 'Validating a number', ->
 
         it 'should fail if empty',  ->
-            topic = $.formance.validate_number ''
-            assert.equal false, topic
+            $number = $('<input type=text>').val('')
+            assert.equal false, $number.formance('validate_number')
 
         it 'should fail if it is a bunch of spaces', ->
-            topic = $.formance.validate_number '                    '
-            assert.equal false, topic
+            $number = $('<input type=text>').val('             ')
+            assert.equal false, $number.formance('validate_number')
 
         it 'should succeed if valid', ->
-            topic = $.formance.validate_number '12344'
-            assert.equal true, topic
+            $number = $('<input type=text>').val('12345')
+            assert.equal true, $number.formance('validate_number')
 
         it 'should fail with non digits', ->
-            topic = $.formance.validate_number '123zaas'
-            assert.equal false, topic
+            $number = $('<input type=text>').val('12345ea')
+            assert.equal false, $number.formance('validate_number')
