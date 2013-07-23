@@ -81,11 +81,11 @@ cards = [
 ]
 
 cardFromNumber = (num) ->
-  num = (num + '').replace(/\D/g, '')
-  return card for card in cards when card.pattern.test(num)
+    num = (num + '').replace(/\D/g, '')
+    return card for card in cards when card.pattern.test(num)
 
 cardFromType = (type) ->
-  return card for card in cards when card.type is type
+    return card for card in cards when card.type is type
   
 restrictCVC = (e) ->
 	$target = $(e.currentTarget)
@@ -95,21 +95,21 @@ restrictCVC = (e) ->
 	val     = $target.val() + digit
 	val.length <= 4
 
-
-$.formance.fn.formatCreditCardCVC = ->
+$.formance.fn.format_credit_card_cvc = ->
 	@.formance('restrictNumeric')
 	@on('keypress', restrictCVC)
 	this
 
+$.formance.fn.validate_credit_card_cvc = ->
+    type = $(this).data('credit_card_type')
+    cvc = $(this).val()
+    cvc = $.trim(cvc)
+    return false unless /^\d+$/.test(cvc)
 
-$.formance.validateCreditCardCVC = (cvc, type) ->
-  cvc = $.trim(cvc)
-  return false unless /^\d+$/.test(cvc)
-
-  if type
-    # Check against a explicit card type
-    cvc.length in cardFromType(type)?.cvcLength
-  else
-    # Check against all types
-    cvc.length >= 3 and cvc.length <= 4
+    if type
+        # Check against a explicit card type
+        cvc.length in cardFromType(type)?.cvcLength
+    else
+        # Check against all types
+        cvc.length >= 3 and cvc.length <= 4
 
