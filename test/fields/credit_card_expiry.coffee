@@ -42,63 +42,60 @@ describe 'credit_card_expiry.js', ->
 
         it 'should fail expires is before the current year', ->
             currentTime = new Date()
-            topic = $.formance.validateCreditCardExpiry currentTime.getMonth() + 1, currentTime.getFullYear() - 1
-            assert.equal false, topic
+            $expiry = $('<input type=text>').val("#{currentTime.getMonth()+1} / #{currentTime.getFullYear()-1}")
+            assert.equal false, $expiry.formance('validateCreditCardExpiry')
 
         it 'that expires in the current year but before current month', ->
             currentTime = new Date()
-            topic = $.formance.validateCreditCardExpiry currentTime.getMonth(), currentTime.getFullYear()
-            assert.equal false, topic
+            if currentTime.getMonth() isnt 0
+                $expiry = $('<input type=text>').val("#{currentTime.getMonth()} / #{currentTime.getFullYear()}")
+                assert.equal false, $expiry.formance('validateCreditCardExpiry')
 
         it 'that has an invalid month', ->
             currentTime = new Date()
-            topic = $.formance.validateCreditCardExpiry 13, currentTime.getFullYear()
-            assert.equal false, topic
+            $expiry = $('<input type=text>').val("13 / #{currentTime.getFullYear()}")
+            assert.equal false, $expiry.formance('validateCreditCardExpiry')
 
         it 'that is this year and month', ->
             currentTime = new Date()
-            topic = $.formance.validateCreditCardExpiry currentTime.getMonth() + 1, currentTime.getFullYear()
-            assert.equal true, topic
+            $expiry = $('<input type=text>').val("#{currentTime.getMonth()+1} / #{currentTime.getFullYear()}")
+            assert.equal true, $expiry.formance('validateCreditCardExpiry')
 
         it 'that is just after this month', ->
-            # Remember - months start with 0 in JavaScript!
             currentTime = new Date()
-            topic = $.formance.validateCreditCardExpiry currentTime.getMonth() + 1, currentTime.getFullYear()
-            assert.equal true, topic
-
+            if currentTime.getMonth() isnt 11
+                $expiry = $('<input type=text>').val("#{currentTime.getMonth()+2} / #{currentTime.getFullYear()}")
+                assert.equal true, $expiry.formance('validateCreditCardExpiry')
+                
         it 'that is after this year', ->
             currentTime = new Date()
-            topic = $.formance.validateCreditCardExpiry currentTime.getMonth() + 1, currentTime.getFullYear() + 1
-            assert.equal true, topic
-
-        it 'that has string numbers', ->
-            currentTime = new Date()
-            currentTime.setFullYear(currentTime.getFullYear() + 1, currentTime.getMonth() + 2)
-            topic = $.formance.validateCreditCardExpiry currentTime.getMonth() + '', currentTime.getFullYear() + ''
-            assert.equal true, topic
+            $expiry = $('<input type=text>').val("#{currentTime.getMonth()+1} / #{currentTime.getFullYear()+1}")
+            assert.equal true, $expiry.formance('validateCreditCardExpiry')
 
         it 'that has non-numbers', ->
-            topic = $.formance.validateCreditCardExpiry 'h12', '3300'
-            assert.equal false, topic
+            $expiry = $('<input type=text>').val("mm / 2013")
+            assert.equal false, $expiry.formance('validateCreditCardExpiry')
 
-        it 'should fail if year or month is NaN', ->
-            topic = $.formance.validateCreditCardExpiry '12', NaN
-            assert.equal false, topic
+            $expiry = $('<input type=text>').val("07 / yy")
+            assert.equal false, $expiry.formance('validateCreditCardExpiry')
 
         it 'should support year shorthand', ->
-            assert.equal $.formance.validateCreditCardExpiry('05', '20'), true
+            currentTime = new Date()
+            $expiry = $('<input type=text>').val("01 / #{(currentTime.getFullYear()+1).toString()[2..3]}")
+            console.log $expiry.val()
+            assert.equal true, $expiry.formance('validateCreditCardExpiry')
 
 
     describe 'Parsing an expiry value', ->
 
         it 'should parse string expiry', ->
-            topic = $.formance.creditCardExpiryVal('03 / 2025')
-            assert.deepEqual {month: 3, year: 2025}, topic
+            $expiry = $('<input type=text>').val("01 / 2020")
+            assert.equal (new Date(2020, 0)).getTime(), $expiry.formance('valCreditCardExpiry').getTime()
 
         it 'should support shorthand year', ->
-            topic = $.formance.creditCardExpiryVal('05/04')
-            assert.deepEqual {month: 5, year: 2004}, topic
+            $expiry = $('<input type=text>').val("01 / 20")
+            assert.equal (new Date(2020, 0)).getTime(), $expiry.formance('valCreditCardExpiry').getTime()
 
         it 'should return NaN when it cannot parse', ->
-            topic = $.formance.creditCardExpiryVal('05/dd')
-            assert isNaN(topic.year)
+            $expiry = $('<input type=text>').val("01 / yy")
+            assert.equal false, $expiry.formance('valCreditCardExpiry')

@@ -86,7 +86,7 @@ formatBackDateDDMMYYYY = (e) ->
 		$target.val(value.replace(/\s\/\s?\d?$/, ''))
 
 
-$.formance.fn.formatddmmyyyy = ->
+$.formance.fn.formatDDMMYYYY = ->
 	@.formance('restrictNumeric')
 	@on('keypress', restrictDateDDMMYYYY)
 	@on('keypress', formatDateDDMMYYYY)
@@ -96,11 +96,38 @@ $.formance.fn.formatddmmyyyy = ->
 	this
 
 
-$.formance.ddmmyyyyVal = (dateString) ->
-    [day, month, year] = if dateString? then dateString.replace(/\s/g, '').split('/', 3) else [NaN, NaN, NaN]
 
+# ------------------------------
+# Validating Date DD / MM / YYYY
+# ------------------------------
+
+parseDateDDMMYYYY = (date_string) ->
+    [day, month, year] = if date_string? then date_string.replace(/\s/g, '').split('/', 3) else [NaN, NaN, NaN]
+
+    # day and month have a limited set of values, but year is opened ended
+    # if a user wants 01 / 01 / 200 then do 01 / 01 / 0200
+    year = NaN unless year.length is 4
+    
     day     = parseInt(day, 10)
     month   = parseInt(month, 10)
     year    = parseInt(year, 10)
 
     return day: day, month: month, year: year
+
+$.formance.fn.valDDMMYYYY = ->
+    date = parseDateDDMMYYYY @.val()
+
+    return no if not date.day? or isNaN(date.day)
+    return no if not date.month? or isNaN(date.month)
+    return no if not date.year? or isNaN(date.year)
+    new Date date.year, date.month-1, date.day
+
+$.formance.fn.validateDDMMYYYY = ->
+    date_dict = parseDateDDMMYYYY @.val()
+    date = @.formance('valDDMMYYYY')
+
+    return no unless date? and date instanceof Date
+    return no unless date.getDate() is date_dict.day
+    return no unless date.getMonth()+1 is date_dict.month
+    return no unless date.getFullYear() is date_dict.year
+    return yes

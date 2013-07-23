@@ -74,63 +74,70 @@ formatBackExpiry = (e) ->
 
 
 $.formance.fn.formatCreditCardExpiry = ->
-	@.formance('restrictNumeric')
-	@on('keypress', restrictExpiry)
-	@on('keypress', formatExpiry)
-	@on('keypress', formatForwardSlashExpiry)
-	@on('keypress', formatForwardExpiry)
-	@on('keydown',  formatBackExpiry)
-	this
+    @.formance('restrictNumeric')
+    @on('keypress', restrictExpiry)
+    @on('keypress', formatExpiry)
+    @on('keypress', formatForwardSlashExpiry)
+    @on('keypress', formatForwardExpiry)
+    @on('keydown',  formatBackExpiry)
+    this
+
+parseCreditCardExpiry = (expiry_string) ->
+    val = expiry_string.replace(/\s/g, '')
+    [month, year] = val.split('/', 2)
+
+    # Allow for year shortcut
+    if year?.length is 2 and /^\d+$/.test(year)
+        prefix = (new Date).getFullYear()
+        prefix = prefix.toString()[0..1]
+        year   = prefix + year
+
+    month = parseInt(month, 10)
+    year  = parseInt(year, 10)
+
+    month: month, year: year
 
 
-$.formance.fn.creditCardExpiryVal = ->
-	$.formance.creditCardExpiryVal($(this).val())
+$.formance.fn.valCreditCardExpiry = ->
+    expiry = parseCreditCardExpiry @.val()
+    
+    return no if not expiry.month? or isNaN(expiry.month)
+    return no if not expiry.year? or isNaN(expiry.year)
+    new Date expiry.year, expiry.month-1
 
-$.formance.creditCardExpiryVal = (val) ->
-  val = val.replace(/\s/g, '')
-  [month, year] = val.split('/', 2)
+$.formance.fn.validateCreditCardExpiry = ->
+    expiry_date = parseCreditCardExpiry @.val()
+    month = expiry_date.month
+    year = expiry_date.year
 
-  # Allow for year shortcut
-  if year?.length is 2 and /^\d+$/.test(year)
-    prefix = (new Date).getFullYear()
-    prefix = prefix.toString()[0..1]
-    year   = prefix + year
+    # Allow passing an object
+    if typeof month is 'object' and 'month' of month
+        {month, year} = month
 
-  month = parseInt(month, 10)
-  year  = parseInt(year, 10)
+    return false unless month and year
 
-  month: month, year: year
+    month = $.trim(month)
+    year  = $.trim(year)
 
+    return false unless /^\d+$/.test(month)
+    return false unless /^\d+$/.test(year)
+    return false unless parseInt(month, 10) <= 12
 
-$.formance.validateCreditCardExpiry = (month, year) ->
-  # Allow passing an object
-  if typeof month is 'object' and 'month' of month
-    {month, year} = month
+    if year.length is 2
+        prefix = (new Date).getFullYear()
+        prefix = prefix.toString()[0..1]
+        year   = prefix + year
 
-  return false unless month and year
+    expiry      = new Date(year, month)
+    currentTime = new Date
 
-  month = $.trim(month)
-  year  = $.trim(year)
+    # Months start from 0 in JavaScript
+    expiry.setMonth(expiry.getMonth() - 1)
 
-  return false unless /^\d+$/.test(month)
-  return false unless /^\d+$/.test(year)
-  return false unless parseInt(month, 10) <= 12
+    # The cc expires at the end of the month,
+    # so we need to make the expiry the first day
+    # of the month after
+    expiry.setMonth(expiry.getMonth() + 1, 1)
 
-  if year.length is 2
-    prefix = (new Date).getFullYear()
-    prefix = prefix.toString()[0..1]
-    year   = prefix + year
-
-  expiry      = new Date(year, month)
-  currentTime = new Date
-
-  # Months start from 0 in JavaScript
-  expiry.setMonth(expiry.getMonth() - 1)
-
-  # The cc expires at the end of the month,
-  # so we need to make the expiry the first day
-  # of the month after
-  expiry.setMonth(expiry.getMonth() + 1, 1)
-
-  expiry > currentTime
+    expiry > currentTime
 
