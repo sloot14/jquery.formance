@@ -2,7 +2,9 @@ $ = jQuery
 hasTextSelected = $.formance.fn.hasTextSelected
 
 reFormatPhoneNumber = (phoneNumberString) ->
-    [phoneNumber, areaCode, first3, last4] = phoneNumberString.replace(/\D/g, '').match(/^(\d{0,3})?(\d{0,3})?(\d{0,4})?$/)
+    phoneNumber = phoneNumberString.replace(/\D/g, '').match(/^(\d{0,3})?(\d{0,3})?(\d{0,4})?$/)
+    # return unless phoneNumber?
+    [phoneNumber, areaCode, first3, last4] = phoneNumber
 
     text = ''
     text += "(#{areaCode}" if areaCode?
