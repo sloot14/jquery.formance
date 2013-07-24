@@ -85,6 +85,9 @@ describe 'dd_mm_yyyy.js', ->
             assert.equal true, $date.formance('validate_dd_mm_yyyy')
     
         it 'if less than 8 digits', ->
+            $date = $('<input type=text>').val('01 / 07')
+            assert.equal false, $date.formance('validate_dd_mm_yyyy')
+
             $date = $('<input type=text>').val('1 / 07 / 2013')
             assert.equal true, $date.formance('validate_dd_mm_yyyy')
 

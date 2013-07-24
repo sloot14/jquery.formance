@@ -106,7 +106,7 @@ parseDateDDMMYYYY = (date_string) ->
 
     # day and month have a limited set of values, but year is opened ended
     # if a user wants 01 / 01 / 200 then do 01 / 01 / 0200
-    year = NaN unless year.length is 4
+    year = NaN unless year? and year.length is 4
     
     day     = parseInt(day, 10)
     month   = parseInt(month, 10)
