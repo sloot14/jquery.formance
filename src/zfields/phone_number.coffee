@@ -73,7 +73,7 @@ formatPastePhoneNumber = (e) ->
     $target.val(text)
 
 
-$.formance.fn.formatPhoneNumber = ->
+$.formance.fn.format_phone_number = ->
     @.formance('restrictNumeric')
     @on('keypress', restrictPhoneNumber)
     @on('keypress', formatPhoneNumber)
@@ -81,7 +81,7 @@ $.formance.fn.formatPhoneNumber = ->
     @on('paste',  formatPastePhoneNumber)
     this
 
-$.formance.fn.validatePhoneNumber = ->
+$.formance.fn.validate_phone_number = ->
     val = $(this).val()
     return false unless val?
     val = val.replace(/\(|\)|\s+|-/g, '')
