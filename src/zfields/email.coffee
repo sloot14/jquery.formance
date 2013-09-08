@@ -3,6 +3,8 @@ hasTextSelected = $.formance.fn.hasTextSelected
 
 # there are no formatters, because you can't
 # really format an email field.
+$.formance.fn.format_email = ->
+    this
 
 $.formance.fn.validate_email = ->
     # http://stackoverflow.com/questions/46155/validate-email-address-in-javascript
