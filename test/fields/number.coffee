@@ -9,7 +9,7 @@ describe 'number.js', ->
     describe 'format_number', ->
 
         it 'should allow numbers', ->
-            $number = $('<input type=text>').formance('format_number')
+            $number = $('<input />').formance('format_number')
             $number.val('123')
 
             e = $.Event('keypress')
@@ -19,7 +19,7 @@ describe 'number.js', ->
             assert.equal $number.val(), '1234'
 
         it 'should not allow non-digits', ->
-            $number = $('<input type=text>').formance('format_number')
+            $number = $('<input />').formance('format_number')
             $number.val('123')
 
             e = $.Event('keypress')
@@ -32,38 +32,48 @@ describe 'number.js', ->
     describe 'Validating a number', ->
 
         it 'should fail if empty',  ->
-            $number = $('<input type=text>').val('')
+            $number = $('<input />').val('')
             assert.equal false, $number.formance('validate_number')
 
         it 'should fail if it is a bunch of spaces', ->
-            $number = $('<input type=text>').val('             ')
+            $number = $('<input />').val('             ')
             assert.equal false, $number.formance('validate_number')
 
         it 'should fail with non digits', ->
-            $number = $('<input type=text>').val('12345ea')
+            $number = $('<input />').val('12345ea')
             assert.equal false, $number.formance('validate_number')
 
         it 'should succeed if valid', ->
-            $number = $('<input type=text>').val('12345')
+            $number = $('<input />').val('12345')
             assert.equal true, $number.formance('validate_number')
 
         it 'should succeed with length data attribute specified', ->
-            $number = $('<input type=text>').data('formance-length', 4)
-                                            .val('1234')
+            $number = $('<input />').data('formance_length', 4)
+                                    .val('1234')
             assert.equal true, $number.formance('validate_number')
 
         it 'should fail if data length attribute is greater than length', ->
-            $number = $('<input type=text>').data('formance_length', 4)
-                                            .val('123')
+            $number = $('<input />').data('formance_length', 4)
+                                    .val('123')
             assert.equal false, $number.formance('validate_number')
 
         it 'should fail if data length attribute is less than length', ->
-            $number = $('<input type=text>').data('formance_length', 4)
-                                            .val('12345')
+            $number = $('<input />').data('formance_length', 4)
+                                    .val('12345')
             assert.equal false, $number.formance('validate_number')
 
         it 'should fail if there are spaces but of the correct length', ->
-            $number = $('<input type=text>').data('formance_length', 4)
-                                            .val('12 34')
+            $number = $('<input />').data('formance_length', 4)
+                                    .val('12 34')
+            assert.equal false, $number.formance('validate_number')
+
+        it 'should succeed if formance_length is a number but as a string', ->
+            $number = $('<input />').data('formance_length', '4')
+                                    .val('1234')
+            assert.equal true, $number.formance('validate_number')
+
+        it 'should fail if formance_length is not a number', ->
+            $number = $('<input />').data('formance_length', 'hello')
+                                    .val('1234')
             assert.equal false, $number.formance('validate_number')
 
