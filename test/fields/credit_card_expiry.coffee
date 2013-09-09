@@ -82,7 +82,6 @@ describe 'credit_card_expiry.js', ->
         it 'should support year shorthand', ->
             currentTime = new Date()
             $expiry = $('<input type=text>').val("01 / #{(currentTime.getFullYear()+1).toString()[2..3]}")
-            console.log $expiry.val()
             assert.equal true, $expiry.formance('validate_credit_card_expiry')
 
 
