@@ -5,5 +5,9 @@ $.formance.fn.format_number = ->
     this
 
 $.formance.fn.validate_number = ->
-    val = $(this).val()
+    $this = $(this)
+    val = $this.val()
+    length = $this.data('formance_length')
+    
+    return false if length and val.length isnt length
     return /^\d+$/.test(val)
