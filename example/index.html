@@ -1,44 +1,138 @@
 <!DOCTYPE html>
-<html>
+<html lang='en'>
 <head>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-  <script src="../lib/jquery.formance.js"></script>
-  <script>
-    jQuery(function($){
-      $('input[data-numeric]').formance('format_number');
-      $('.cc-number').formance('format_credit_card_number');
-      $('.cc-exp').formance('format_credit_card_expiry');
-      $('.cc-cvc').formance('format_credit_card_cvc');
-      $('.phone_number').formance('format_phone_number');
-      $('.canadian_postal_code').formance('format_postal_code');
-      $('.ontario_outdoors_card_number').formance('format_ontario_outdoors_card_number');
-    });
-  </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
 </head>
 <body>
 
-  <form novalidate autocomplete="on">
-    <h2>North America Phone Number formatting '(111) 111 - 111'</h2>
-    <input type="text" class="phone_number" placeholder="Phone Number">
+    <div class='container'>
 
-    <h2>Canadian Postal Code 'A1A 1A1'</h2>
-    <input type="text" class="canadian_postal_code" placeholder="Postal Code">
+        <div class='row header' style='margin-top:50px; margin-bottom:100px'>
+            <div class='col-md-8 col-md-offset-2'>
+                <h1>Formance.js</h1>
+                <p>A javascript library for formatting and validating form fields, based on / inspired by Stripe's jQuery.payment library.</p>
+                <p>Client side validation is not sufficient in any project because the javascript can be bypassed and people can submit requests directly to the server. However, that doesn't mean client side validation should be forgotten. This library is for those who care about the user experience.</p>
+                <p><a href='https://github.com/omarshammas/jquery.formance' target='_blank'>View the Project on Github</a></p>
+            </div>
+        </div>
 
-    <h2>Credit Card number formatting</h2>
-    <input type="text" class="cc-number" pattern="\d*" x-autocompletetype="cc-number" placeholder="Credit Card number" required>
+        <div class='row'>
+            <div class='col-md-8 col-md-offset-2'>
+                <form novalidate autocomplete="on">
 
-    <h2>Expiry formatting</h2>
-    <input type="text" class="cc-exp" pattern="\d*" x-autocompletetype="cc-exp" placeholder="Expires MM/YY" required maxlength="9">
+                    <h3>Credit Card Number</h3>
+                    <input type="text" class="credit_card_number" pattern="\d*" x-autocompletetype="cc-number" placeholder="Credit Card number" required>
 
-    <h2>CVC formatting</h2>
-    <input type="text" class="cc-cvc" pattern="\d*" x-autocompletetype="cc-csc" placeholder="Security code" required  autocomplete="off">
+                    <h3>Credit Card Expiry</h3>
+                    <input type="text" class="credit_card_expiry" pattern="\d*" x-autocompletetype="cc-exp" placeholder="Expires MM / YY" required maxlength="9">
 
-    <h2>Restrict Numeric</h2>
-    <input type="text" placeholder="Only Digits" data-numeric>
+                    <h3>Credit Card CVC</h3>
+                    <input type="text" class="credit_card_cvc" pattern="\d*" x-autocompletetype="cc-csc" placeholder="Security code" required  autocomplete="off">
 
-    <h2>Ontario outdoors card number formatting </h2>
-    <input type="text" class="ontario_outdoors_card_number" placeholder="Outdoors Card Number">
-  </form>
+
+                    <h3>Date DD / MM / YYYY</h3>
+                    <input type="text" class='dd_mm_yyyy' placeholder="Date DD / MM / YYYY">
+
+                    <h3>Date YYYY / MM / DD</h3>
+                    <input type="text" class='yyyy_mm_dd' placeholder="Date YYYY / MM / DD">
+
+
+                    <h3>Email (Simple Algorithm)</h3>
+                    <input type="text" class='email' placeholder="Email">
+
+                    <h3>Email (Complex Algorithm)</h3>
+                    <input type="text" class='email' placeholder="Email" data-formance_algorithm="complex">
+
+
+                    <h3>Numbers</h3>
+                    <input type="text" class='number' placeholder="Only Digits">
+
+                    <h3>Numbers (Length = 5)</h3>
+                    <input type="text" class='number' placeholder="Only Digits" data-formance_length='5'>
+
+
+                    <h3>North American Phone Number</h3>
+                    <input type="text" class="phone_number" placeholder="Phone Number">
+
+                    <h3>Canadian Postal Code 'A1A 1A1'</h3>
+                    <input type="text" class="postal_code" placeholder="Postal Code">
+
+
+
+                    <h3>Ontario Driver's License Number 'A1234 - 12345 - 12345'</h3>
+                    <input type="text" class="ontario_drivers_license_number" placeholder="Ontario Driver's License Number">
+
+                    <h3>Ontario Photo Health Card Number '1234 - 123 - 123 - AB'</h3>
+                    <input type="text" class="ontario_photo_health_card_number" placeholder="Ontario Photo Health Card Number">
+
+                    <h3>Ontario Outdoors Card Number '708158 1234567890'</h3>
+                    <input type="text" class="ontario_outdoors_card_number" placeholder="Ontario Outdoors Card Number">
+
+                </form>
+           </div>
+        </div>
+
+        <div class='row footer' style='margin-top:100px; margin-bottom:50px;'>
+           <div class='col-md-8 col-md-offset-2'>
+                <p class='pull-left'>Written by <a href='http://omarshammas.com' target='_blank'>Omar Shammas</a></p>
+                <p class='text-right'>Formance.js</p>
+           </div>
+       </div>
+
+   </div> <!-- closes the container -->
+
+<!-- Javascript at the bottom for faster loading -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="../lib/jquery.formance.min.js"></script>
+    <script>
+        jQuery(function($){
+            fields = ['credit_card_number',
+                      'credit_card_expiry',
+                      'credit_card_cvc',
+                      'dd_mm_yyyy',
+                      'yyyy_mm_dd',
+                      'email',
+                      'number',
+                      'phone_number',
+                      'postal_code',
+                      'ontario_drivers_license_number',
+                      'ontario_photo_health_card_number',
+                      'ontario_outdoors_card_number']
+
+             $.each( fields, function (index, value) {
+                $('input.'+value).formance('format_'+value)
+                                 .addClass('form-control')
+                                 .wrap('<div class=\'form-group\' />')
+                                 .parent()
+                                    .prepend('<label class=\'control-label\'></label>');
+
+                $('input.'+value).on('keyup change blur', function (value) {
+                    return function (event) {
+                        $this = $(this);
+                        if ($this.formance('validate_'+value)) {
+                            $this.parent()
+                                    .removeClass('has-success has-warning has-error')
+                                    .addClass('has-success')
+                                    .children(':first')
+                                        .removeClass('inputSuccess inputWarning inputError')
+                                        .addClass('inputSuccess')
+                                        .text('Valid!');
+                        } else {
+                            $this.parent()
+                                    .removeClass('has-success has-warning has-error')
+                                    .addClass('has-error')
+                                    .children(':first')
+                                        .removeClass('inputSuccess inputWarning inputError')
+                                        .addClass('inputError')
+                                        .text('Sorry Invalid');
+                        }
+                    }
+                }(value));
+             });
+        });
+    </script>
 
 </body>
 </html>
