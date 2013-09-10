@@ -1,6 +1,8 @@
 $ = jQuery
 
 $.formance.fn.format_number = ->
+    length = $(this).data('formance_length')
+    $(this).attr('maxLength', length) if length?
     @.formance('restrictNumeric')
     this
 

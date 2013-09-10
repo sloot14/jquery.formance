@@ -28,6 +28,39 @@ describe 'number.js', ->
 
             assert.equal '123', $number.val()
 
+        it 'should allow digits when less than formance length', ->
+            $number = $('<input />').data('formance_length', '4')
+                                    .formance('format_number')
+            $number.val('123')
+
+            e = $.Event('keypress')
+            e.which = 52 # '4'
+            $number.trigger(e)
+
+            assert.equal '1234', $number.val()
+
+        it 'should not allow digits when more than formance length', ->
+            $number = $('<input />').data('formance_length', '4')
+                                    .formance('format_number')
+            $number.val('1234')
+
+            e = $.Event('keypress')
+            e.which = 53 # '5'
+            $number.trigger(e)
+
+            assert.equal '1234', $number.val()
+
+        it 'should allow digits when formance length is not a number', ->
+            $number = $('<input />').data('formance_length', 'helo')
+                                    .formance('format_number')
+            $number.val('123')
+
+            e = $.Event('keypress')
+            e.which = 52 # '4'
+            $number.trigger(e)
+
+            assert.equal '1234', $number.val()
+
 
     describe 'Validating a number', ->
 
