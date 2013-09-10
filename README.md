@@ -138,7 +138,7 @@ Date includes a helper function to retrieve the date value. *Note it does not ch
 If the text is parsed without any errors then a Javascript Date object is returned otherwise false.
 
 ```javascript
-$("<input value='01 / 07 / 2013" />").formance('val_dd_mm_yyyy');   // new Date(2013, 7-1, 1)
+$("<input value='01 / 07 / 2013' />").formance('val_dd_mm_yyyy');   // new Date(2013, 7-1, 1)
 $("<input value='dd / 07 / 2013' />").formance('val_dd_mm_yyyy');   // false 
 ```
 
