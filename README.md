@@ -6,7 +6,7 @@ Client side validation is not sufficient in any project because the javascript c
 
 ## Demo
 
-Look in `./example/index.html`
+You can find a full demo [here] (http://omarshammas.com/formancejs.html).
 
 ## Fields
 
