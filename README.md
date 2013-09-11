@@ -6,7 +6,17 @@ Client side validation is not sufficient in any project because the javascript c
 
 ## Demo
 
-You can find a full demo [here] (http://omarshammas.com/formancejs.html).
+You can find a full demo [here] (http://omarshammas.github.io/formancejs).
+
+Or you can run the demo locally
+
+```bash
+git clone git@github.com:omarshammas/jquery.formance.git
+cd jquery.formance/demo
+python -m SimpleHTTPServer
+```
+
+Open a browser and go to `localhost:8000/formancejs.html`.
 
 ## Fields
 
