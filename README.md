@@ -133,7 +133,7 @@ Validates the date:
 $('input.dd_mm_yyyy').formance('validate_dd_mm_yyyy');
 ```
 
-Date includes a helper function to retrieve the date value. *Note it does not check to see if it valid*. It simply creates a date object with the specified values which may be incorrect. For example `new Date(2013, 2-1, 30)` returns March 2nd because February does not have 30 days. You should check if it is valid before using the date. 
+Date includes a helper function to retrieve the date value. *Note it does not check to see if it is valid*. It simply creates a date object with the specified values which may be incorrect. For example `new Date(2013, 2-1, 30)` returns March 2nd because February does not have 30 days. You should check if it is valid before using the date. 
 
 If the text is parsed without any errors then a Javascript Date object is returned otherwise false.
 
