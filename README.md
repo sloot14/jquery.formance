@@ -21,7 +21,7 @@ Open a browser and go to `localhost:8000/formancejs.html`.
 
 ## Getting Started
 
-Read this wiki article on (how to get started)[https://github.com/omarshammas/jquery.formance/wiki/Getting-Started]
+Read this wiki article on [how to get started](https://github.com/omarshammas/jquery.formance/wiki/Getting-Started)
 
 ## Fields
 
@@ -51,4 +51,4 @@ Contributions are more than welcome. Please [read this](https://github.com/omars
 Please see [LICENSE](https://github.com/omarshammas/jquery.formance/blob/master/LICENSE) for licensing details.
 
 ## Author
-Omar Shammas, @omarshammas, [http://omarshammas.com](http://omarshammas.com) and many other wonderful [contributors](https://github.com/omarshammas/jquery.formance/graphs/contributors).
+Omar Shammas, [@omarshammas](https://twitter.com/omarshammas), [http://omarshammas.com](http://omarshammas.com) and many other wonderful [contributors](https://github.com/omarshammas/jquery.formance/graphs/contributors).
