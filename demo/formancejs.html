@@ -42,6 +42,7 @@
                 <li><a href="#credit_card_cvc">Credit Card CVC</a></li>
                 <li><a href="#credit_card_expiry">Credit Card Expiry</a></li>
                 <li><a href="#credit_card_number">Credit Card Number</a></li>
+                <li><a href="#uk_sort_code">Uk Sort Code</a></li>
                 <li><a href="#dd_mm_yyyy">Date dd / mm / yyyy </a></li>
                 <li><a href="#yyyy_mm_dd">Date yyyy / mm / dd</a></li>
                 <li><a href="#email">Email Address</a></li>
@@ -299,7 +300,35 @@
         </div>
 
 
+  <div class='field' id='uk_sort_code'>
+            <h4>Uk Sort Code</h4>
+            <p> <input type="text" class="uk_sort_code" pattern="\d*" x-autocompletetype="uk_sort_code" placeholder="Uk sort code" required> </p>
 
+            <p>Formats the UK sort code:</p>
+
+            <ul>
+                <li>Limits to 6 numbers</li>
+                <li>Restricts input to numbers</li>
+                <li>Includes a dash between every 2 digits</li>
+            </ul>
+            <div class="highlight highlight-javascript"><pre>
+<span class="nx">$</span><span class="p">(</span><span class="s1">'input.uk_sort_code'</span><span class="p">).</span><span class="nx">formance</span><span class="p">(</span><span class="s1">'format_uk_sort_code'</span><span class="p">);</span>
+             </pre></div>
+
+            <p>Validates the UK sort code:</p>
+            <ul>
+                <li>Validates numbers</li>
+                <li>Validates length</li>
+            </ul>
+            <div class="highlight highlight-javascript">
+            <pre>
+        <span class="nx">$</span><span class="p">(</span><span class="s1">'input.uk_sort_code'</span><span class="p">).</span><span class="nx">formance</span><span class="p">(</span><span class="s1">'validate_uk_sort_code'</span><span class="p">);</span> 
+<span class="c1">//examples</span> 
+<span class="nx">$</span><span class="p">(</span><span class="s2">"&lt;input value='09 - 09 - 09' /&gt;"</span><span class="p">).</span><span class="nx">formance</span><span class="p">(</span><span class="s1">'validate_uk_sort_code'</span><span class="p">);</span>   <span class="c1">// true</span> 
+<span class="nx">$</span><span class="p">(</span><span class="s2">"&lt;input value='00 -' /&gt;"</span><span class="p">).</span><span class="nx">formance</span><span class="p">(</span><span class="s1">'validate_uk_sort_code'</span><span class="p">);</span>   <span class="c1">// false</span> 
+             </pre></div>
+
+        </div>
 
 
 
@@ -483,7 +512,7 @@
       </footer>
     </div>
 <!-- Javascript at the bottom for faster loading -->
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
     <script src="js/scale.fix.js"></script>
     <script src="js/jquery.formance.min.js" /></script>
     <script src="js/awesome_form.js"></script>
