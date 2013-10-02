@@ -9,6 +9,7 @@ jQuery(function($){
               'phone_number',
               'postal_code',
               'uk_sort_code',
+              'yy_mm',
               'ontario_drivers_license_number',
               'ontario_photo_health_card_number',
               'ontario_outdoors_card_number']
