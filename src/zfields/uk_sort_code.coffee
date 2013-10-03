@@ -66,8 +66,8 @@ $.formance.fn.format_uk_sort_code = (e) ->
 	@on "keypress", formatBackUkSortCode
 	this
 
-$.formance.fn.validate_uk_sort_code = ->
+$.formance.fn.validate_uk_sort_code = -> 
 	sortCode = $(this).val()
-	return false  if sortCode.length < 12
-	return false if sortCode.trim() == ''
-	true
+	# return false if sortCode.trim() == ''
+	return true if /^(\d{2})[\s-]*(\d{2})[\s-]*(\d{2})[\s]*$/.test(sortCode)
+	false
