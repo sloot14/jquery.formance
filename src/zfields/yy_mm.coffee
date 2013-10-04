@@ -1,7 +1,7 @@
 $ = jQuery
 hasTextSelected = $.formance.fn.hasTextSelected
 
-restrictTimeYYMM = (e) ->
+restrictDateYYMM = (e) ->
 	$target = $(e.currentTarget)
 	digit = String.fromCharCode(e.which)
 	return unless /^\d+$/.test(digit)
@@ -13,7 +13,7 @@ restrictTimeYYMM = (e) ->
 
 	return false if value.length > 4
 
-formatTimeYYMM = (e) ->
+formatDateYYMM = (e) ->
 	#Only format if input is a number
 	digit = String.fromCharCode(e.which)
 	return unless /^\d+$/.test(digit)
@@ -30,7 +30,7 @@ formatTimeYYMM = (e) ->
 		$target.val("#{old_val}0#{digit}")
 
 
-formatForwardTimeYYMM = (e) ->   #handles when the user enters the second digit
+formatForwardDateYYMM = (e) ->   #handles when the user enters the second digit
 	digit = String.fromCharCode(e.which)
 	return unless /^\d+$/.test(digit)
 
@@ -41,7 +41,7 @@ formatForwardTimeYYMM = (e) ->   #handles when the user enters the second digit
 	if /^\d{2}$/.test(val)
 		$target.val("#{val} / ")
 
-formatForwardSlashTimeYYMM = (e) ->    # handles when the user hits '/'
+formatForwardSlashDateYYMM = (e) ->    # handles when the user hits '/'
 	slash = String.fromCharCode(e.which)
 	return unless slash is '/'
 
@@ -53,7 +53,7 @@ formatForwardSlashTimeYYMM = (e) ->    # handles when the user hits '/'
 	if parse_year.test(val) and val.length == 2 or val.length == 1
 		$target.val("0#{val} / ")
 
-formatBackTimeYYMM = (e) ->
+formatBackDateYYMM = (e) ->
 	# If shift+backspace is pressed
 	return if e.meta
 
@@ -77,36 +77,36 @@ formatBackTimeYYMM = (e) ->
 
 $.formance.fn.format_yy_mm = ->
 	@formance "restrictNumeric"
-	@on "keypress", restrictTimeYYMM
-	@on "keypress", formatTimeYYMM
-	@on "keypress", formatForwardTimeYYMM
-	@on "keypress", formatForwardSlashTimeYYMM
-	@on "keypress", formatBackTimeYYMM
+	@on "keypress", restrictDateYYMM
+	@on "keypress", formatDateYYMM
+	@on "keypress", formatForwardDateYYMM
+	@on "keypress", formatForwardSlashDateYYMM
+	@on "keypress", formatBackDateYYMM
 	this
 
 
 # ------------------------------
-# Validating Time YY / MM
+# Validating Date YY / MM
 # ------------------------------
 
-parseTimeYYMM = (date_string) ->
+parseDateYYMM = (date_string) ->
 	[year, month] = if date_string? then date_string.replace(/\s/g, '').split('/', 2) else [NaN, NaN]
 	month   = parseInt(month, 10)
 	year    = parseInt(year, 10)
 	return year: year, month: month
 
 $.formance.fn.val_yy_mm = ->
-	date = parseTimeYYMM @.val()
-
+	date = parseDateYYMM @.val()
 	return no if not date.year? or isNaN(date.year)
 	return no if not date.month? or isNaN(date.month)
 	return date
 
 $.formance.fn.validate_yy_mm = ->
-	date_dict = parseTimeYYMM @.val()
+	date_dict = parseDateYYMM @.val()
 	date = @formance "val_yy_mm"
-	yymm = $(this).val().replace(/\D/g, '')
-	return false unless yymm.length == 4
+	yymm = $(this).val()
+	return false unless date.month == 12 or date.month < 12
 	return false unless date.month is date_dict.month
 	return false unless date.year is date_dict.year
-	true
+	return true if /^(\d{2})[\s\/]*(\d{2})[\s\/]*$/.test(yymm)
+	false
