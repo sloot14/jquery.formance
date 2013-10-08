@@ -21,53 +21,43 @@ VALID_EMAILS = [
 ]
 
 INVALID_EMAILS = [
-#    'Abc.example.com'
+    'Abc.example.com'
 #   'A@b@c@example.com'
-    'a"b(c)d,e:f;g<h>i[j\k]l@example.com'
-    'just"not"right@example.com'
+#    'a"b(c)d,e:f;g<h>i[j\k]l@example.com'
+#    'just"not"right@example.com'
 #    'this is"not\allowed@example.com'
 #    'this\ still\"not\\allowed@example.com'
 ]
 
-
 describe 'email.js', ->
 
-    describe 'Validating an email address', ->
 
-        it 'should fail if empty', ->
-            $email = $('<input>').val('')
-            assert.equal false, $email.formance('validate_email')
+    it 'should validate an email address using the default algorithm', ->
+        for email in VALID_EMAILS
+            validate email,         yes,        email
+        for email in INVALID_EMAILS
+            validate email,         no,         email
+        validate '',                no,         'empty'
+        validate '         ',       no,         'only spaces'
 
-        it 'should fail if it is a bunch of spaces', ->
-            $email = $('<input>').val('                ')
-            assert.equal false, $email.formance('validate_email')
 
-        it 'should succeed with valid emails', ->
-            for email in VALID_EMAILS
-                $email = $('<input>').val(email)
-                assert.equal true, $email.formance('validate_email')
-        
-        it 'should succeed with invalid emails, (using the simple algorithm) has false nagatives', ->
-            for email in INVALID_EMAILS
-                $email = $('<input>').val(email)
-                assert.equal true, $email.formance('validate_email')
+     it 'should validate using the complex algorithm', ->
+        for email in VALID_EMAILS
+            validate_with_algorithm     email,      'complex',          yes,        email
+        for email in INVALID_EMAILS
+            validate_with_algorithm     email,      'complex',          no,         email
 
-# complex algorithm                
-        it 'should succeed with valid emails using the complex algorithm', ->
-            for email in VALID_EMAILS
-                $email = $('<input>').val(email)
-                                     .data('formance_algorithm', 'complex')
-                assert.equal true, $email.formance('validate_email')
- 
-        it 'should fail with invalid emails using the complex algorithm', ->
-            for email in INVALID_EMAILS
-                $email = $('<input>').val(email)
-                                     .data('formance_algorithm', 'complex')
-                assert.equal false, $email.formance('validate_email')
-                
-# algorithm that does not exist
-        it 'should resort to simple algorithm if it can\'t find the algorithm specified', ->
-            for email in INVALID_EMAILS
-                $email = $('<input>').val(email)
-                                     .data('formance_algorithm', 'does_not_exist')
-                assert.equal true, $email.formance('validate_email')
+
+     it 'should validate using the default when the specified algorithm is not recognized', ->
+         for email in INVALID_EMAILS
+             validate_with_algorithm    email,     'does_not_exist',    no,         email
+
+
+validate = (value, valid, message) ->
+    $email = $('<input type=text>').val(value)
+    assert.equal $email.formance('validate_email'), valid, message
+
+validate_with_algorithm = (value, algorithm, valid, message) ->
+    $email = $('<input>').val(value)
+                         .data('formance_algorithm', algorithm)
+    assert.equal $email.formance('validate_email'), valid, message

@@ -6,101 +6,41 @@ require('../../lib/jquery.formance.js')
 
 describe 'ontario_photo_health_card_number.js', ->
 
-    describe 'format_ontario_photo_health_card_number', ->
+    it 'should format the ontario photo health card number', ->
+        format '123',                       52,     '1234 - ',              'appends a - after the first 4 digits'
+        format '1234 - 12',                 51,     '1234 - 123 - ',        'appends a - after the first 7 digits'
+        format '1234 - 123 - 12',           51,     '1234 - 123 - 123 - ',  'appends a - after the first 10 digits'
 
-        it 'should format first four digits correctly', ->
-            $ophcn = $('<input type=text>').formance('format_ontario_photo_health_card_number')
-            $ophcn.val('123')
-
-            e = $.Event('keypress')
-            e.which = '52'
-            $ophcn.trigger(e)
-
-            assert.equal '1234 - ', $ophcn.val()
-
-        it 'should format second three correctly', ->
-            $ophcn = $('<input type=text>').formance('format_ontario_photo_health_card_number')
-            $ophcn.val('1234 - 12')
-
-            e = $.Event('keypress')
-            e.which = '51' # '3'
-            $ophcn.trigger(e)
-
-            assert.equal '1234 - 123 - ', $ophcn.val()
-
-        it 'should format third three correctly', ->
-            $ophcn = $('<input type=text>').formance('format_ontario_photo_health_card_number')
-            $ophcn.val('1234 - 123 - 12')
-
-            e = $.Event('keypress')
-            e.which = '51' # '3'
-            $ophcn.trigger(e)
-
-            assert.equal '1234 - 123 - 123 - ', $ophcn.val()
-
-
-        it 'should format last two correctly', ->
-            $ophcn = $('<input type=text>').formance('format_ontario_photo_health_card_number')
-            $ophcn.val('1234 - 123 - 123 - ')
-
-            e = $.Event('keypress')
-            e.which = '65' # 'a'
-            $ophcn.trigger(e)
-
-            assert.equal $ophcn.val(), '1234 - 123 - 123 - A'
-
-        it 'should not allow letters in the number part', ->
-            $ophcn = $('<input type=text>').formance('format_ontario_photo_health_card_number')
-            $ophcn.val('12')
-
-            e = $.Event('keypress')
-            e.which = '65' # 'a'
-            $ophcn.trigger(e)
-
-            assert.equal '12', $ophcn.val()
-
-        it 'should not allow numbers in the version code', ->
-            $ophcn = $('<input type=text>').formance('format_ontario_photo_health_card_number')
-            $ophcn.val('1234 - 123 - 123 - ')
-
-            e = $.Event('keypress')
-            e.which = '51' # '3'
-            $ophcn.trigger(e)
-
-            assert.equal '1234 - 123 - 123 - ', $ophcn.val()
+        format '1234 - 123 - 12',           65,     '1234 - 123 - 12',       'entering a letter where only digits are allowed'
+        format '1234 - 123 - 123 - ',       65,     '1234 - 123 - 123 - A',  'last 2 characters are letters'
+        format '1234 - 123 - 123 - ',       52,     '1234 - 123 - 123 - ',   'entering a digit where only letters are allowed'
 
         # add tests for backspacing
 
 
-    describe 'Validating an ontario photo health card number', ->
+    it 'should validate an ontario photo health card number', ->
+        validate '1234123123AB',            yes,        'valid'
+        validate '1234 - 123 - 123 - AB',   yes,        'valid with spaces and dashes'
+        validate '1234 - 123 - 12A - AB',   no,         'invalid, letters where a digit was expected'
 
-        it 'should fail if empty', ->
-            $ophcn = $('<input type=text>').val('')
-            assert.equal false, $ophcn.formance('validate_ontario_photo_health_card_number')
+        validate '',                        no,         'empty'
+        validate '                  ',      no,         'only spaces'
+        validate '1234 - 123 - 123 - ',     no,         'version code is not included'
+        validate '1234 - 123 - 123 - ABC',  no,         'more than 12 characters'
+        validate '1234 - 1233 - 123 - AB',  no,         'more than 12 characters'
+        validate '1234 - 123; - 123 - AB',  no,         'contains non-alphanumeric characters'
 
-        it 'should fail ig it is a bunch of space', ->
-            $ophcn = $('<input type=text>').val('             ')
-            assert.equal false, $ophcn.formance('validate_ontario_photo_health_card_number')
 
-        it 'should succeed if valid', ->
-            $ophcn = $('<input type=text>').val('1234123123AB')
-            assert.equal true, $ophcn.formance('validate_ontario_photo_health_card_number')
+format = (value, trigger, expected_value, message) ->
+    $oocn = $('<input type=text>').formance('format_ontario_photo_health_card_number')
+                                  .val(value)
 
-        it 'has dashes and spaces but is valid', ->
-            $ophcn = $('<input type=text>').val('1234 - 123 - 123 - AB')
-            assert.equal true, $ophcn.formance('validate_ontario_photo_health_card_number')
+    e = $.Event('keypress')
+    e.which = trigger
+    $oocn.trigger(e)
 
-        it 'should fail if version code is not included', ->
-            $ophcn = $('<input type=text>').val('1234 - 123 - 123 - ')
-            assert.equal false, $ophcn.formance('validate_ontario_photo_health_card_number')
+    assert.equal $oocn.val(), expected_value, message
 
-        it 'should fail if more than 12 characters', ->
-            $ophcn = $('<input type=text>').val('1234 - 123 - 123 - ABC')
-            assert.equal false, $ophcn.formance('validate_ontario_photo_health_card_number')
-
-            $ophcn = $('<input type=text>').val('1234 - 1233 - 123 - AB')
-            assert.equal false, $ophcn.formance('validate_ontario_photo_health_card_number')
-
-        it 'should fail with non alphanumeric characters', ->
-            $ophcn = $('<input type=text>').val('1234; - 1233 - ;/123 -/ AB')
-            assert.equal false, $ophcn.formance('validate_ontario_photo_health_card_number')
+validate = (value, valid, message) ->
+    $oocn = $('<input type=text>').val(value)
+    assert.equal $oocn.formance('validate_ontario_photo_health_card_number'), valid, message

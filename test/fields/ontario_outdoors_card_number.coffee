@@ -6,73 +6,35 @@ require('../../lib/jquery.formance.js')
 
 describe 'ontario_outdoors_card_number.js', ->
 
-    describe 'format_ontario_outdoors_card_number', ->
+    it 'should format the ontario outdoors card number', ->
+        format '',              55,         '708158 ',      'appends 708158, the customary first 6 numbers when leading with a 7'
+        format '',              52,         '708158 4',     'appends 708158 plus to the number entered'
+        format '',              100,        '',             'only allows digits'
+        format '708158 4',      100,        '708158 4',     'only allows digits'
+        #format '708158 ',       8,          '',             'backspace when only the first 6 digits remaining'
 
-        it 'should format the first 6 fixed numbers correctly', ->
-            $oocn = $('<input type=text>').formance('format_ontario_outdoors_card_number')
+    it 'should validate the ontario outdoors card number', ->
+        validate '708158123456789',     yes,         'valid'
+        validate '708158 123456789',    yes,         'valid with spaces'
 
-            e = $.Event('keypress')
-            e.which = 55 # '7'
-            $oocn.trigger(e)
-
-            assert.equal '708158 ', $oocn.val()
-
-        it 'should only allow numbers', ->
-            $oocn = $('<input type=text>').formance('format_ontario_outdoors_card_number')
-            $oocn.val('708158 4')
-
-            e = $.Event('keypress')
-            e.which = 100 # 'd'
-            $oocn.trigger(e)
-
-            assert.equal '708158 4', $oocn.val()
-
-        it 'should only allow numbers', ->
-            $oocn = $('<input type=text>').formance('format_ontario_outdoors_card_number')
-
-            e = $.Event('keypress')
-            e.which = 100 # 'd'
-            $oocn.trigger(e)
-
-            assert.equal '', $oocn.val()
-
-        # it 'should erase 708158 on backspace', ->
-        #   $oocn = $('<input type=text>').formance('format_ontario_outdoors_card_number')
-        #   $oocn.val('708158 ')
-
-        #   e = $.Event('keypress')
-        #   e.which = 8 # backspace
-        #   $oocn.trigger(e)
-
-        #   assert.equal '', $oocn.val()
+        validate '',                    no,         'empty'
+        validate '          ',          no,         'only spaces'
+        validate '123456 1234567890',   no,         'invalid first 6 character, expected 708158'
+        validate '708158 1234567890',   no,         'more than 16 digits'
+        validate '708158 12345678',     no,         'less than 16 digits'
+        validate '708158 - ;12345678',  no,         'contains non digits'
 
 
-    describe 'Validating an Ontario outdoors card number', ->
+format = (value, trigger, expected_value, message) ->
+    $oocn = $('<input type=text>').formance('format_ontario_outdoors_card_number')
+                                  .val(value)
 
-        it 'should fail if empty', ->
-            $oocn = $('<input type=text>').val('')
-            assert.equal false, $oocn.formance('validate_ontario_outdoors_card_number')
+    e = $.Event('keypress')
+    e.which = trigger
+    $oocn.trigger(e)
 
-        it 'should fail if it is a bunch of spaces', ->
-            $oocn = $('<input type=text>').val('               ')
-            assert.equal false, $oocn.formance('validate_ontario_outdoors_card_number')
+    assert.equal $oocn.val(), expected_value, message
 
-        it 'should succeed if valid', ->
-            $oocn = $('<input type=text>').val('708158123456789')
-            assert.equal true, $oocn.formance('validate_ontario_outdoors_card_number')
-
-        it 'has spaces but is valid', ->
-            $oocn = $('<input type=text>').val('708158 123456789')
-            assert.equal true, $oocn.formance('validate_ontario_outdoors_card_number')
-
-        it 'should fail if more than 10 digits', ->
-            $oocn = $('<input type=text>').val('708158 1234567890')
-            assert.equal false, $oocn.formance('validate_ontario_outdoors_card_number')
-
-        it 'should fail if less than 10 digits', ->
-            $oocn = $('<input type=text>').val('708158 12345678')
-            assert.equal false, $oocn.formance('validate_ontario_outdoors_card_number')
-
-        it 'should fail with non digits', ->
-            $oocn = $('<input type=text>').val('708158 - ;123456789')
-            assert.equal false, $oocn.formance('validate_ontario_outdoors_card_number')
+validate = (value, valid, message) ->
+    $oocn = $('<input type=text>').val(value)
+    assert.equal $oocn.formance('validate_ontario_outdoors_card_number'), valid, message

@@ -4,52 +4,35 @@ global.jQuery = $
 
 require('../../lib/jquery.formance.js')
 
+
 describe 'credit_card_cvc.js', ->
 
-    describe 'Validating a CVC without credit card type', ->
+    it 'should validate the cvc', ->
+        validate '123',         yes,        'valid cvc'
+        validate '12',          no,         'less than 3 digits'
+        validate '12345',       no,         'more than 4 digits'
 
-        it 'should fail if is empty', ->
-            $cvc = $('<input type=text>').val('')
-            assert.equal false, $cvc.formance('validate_credit_card_cvc')
+        # special cases
+        validate '',            no,         'empty cvc'
+        validate '    ',        no,         'cvc with no digits only spaces'
+        validate '123e',        no,         'cvc containing non-digits'
 
-        it 'should pass if is valid', ->
-            $cvc = $('<input type=text>').val('123')
-            assert.equal true, $cvc.formance('validate_credit_card_cvc')
 
-        it 'should fail with non-digits', ->
-            $cvc = $('<input type=text>').val('12e')
-            assert.equal false, $cvc.formance('validate_credit_card_cvc')
+    it 'should validate the cvc when provided with a card type', ->
+        validate_with_card_type '123',     'amex',     yes,    'valid 3 digit amex cvc code'
+        validate_with_card_type '1234',    'amex',     yes,    'valid 4 digit amex cvc code'
+        validate_with_card_type '123',     'visa',     yes,    'valid visa'
+        validate_with_card_type '1234',    'visa',     no,     'invalid visa 4 digit cvc code'
 
-        it 'should fail with less than 3 digits', ->
-            $cvc = $('<input type=text>').val('12')
-            assert.equal false, $cvc.formance('validate_credit_card_cvc')
 
-        it 'should fail with more than 4 digits', ->
-            $cvc = $('<input type=text>').val('12345')
-            assert.equal false, $cvc.formance('validate_credit_card_cvc')
 
-    describe 'Validating a CVC with credit card type', ->
+# helper functions
+# makes the test a lot clearer and legible
+validate = (value, valid, message) ->
+    $cvc = $('<input type=text>').val(value)
+    assert.equal $cvc.formance('validate_credit_card_cvc'), valid, message
 
-        it 'should validate a three digit number with no card type', ->
-            $cvc = $('<input type=text>').val('123')
-            assert.equal true, $cvc.formance('validate_credit_card_cvc')
-
-        it 'should validate a three digit number with card type amex', ->
-            $cvc = $('<input type=text>').val('123').data('credit_card_type', 'amex')
-            assert.equal true, $cvc.formance('validate_credit_card_cvc')
-
-        it 'should validate a three digit number with card type other than amex', ->
-            $cvc = $('<input type=text>').val('123').data('credit_card_type', 'visa')
-            assert.equal true, $cvc.formance('validate_credit_card_cvc')
-
-        it 'should not validate a four digit number with a card type other than amex', ->
-            $cvc = $('<input type=text>').val('1234').data('credit_card_type', 'visa')
-            assert.equal false, $cvc.formance('validate_credit_card_cvc')
-
-        it 'should validate a four digit number with card type amex', ->
-            $cvc = $('<input type=text>').val('1234').data('credit_card_type', 'amex')
-            assert.equal true, $cvc.formance('validate_credit_card_cvc')
-
-        it 'should not validate a number larger than 4 digits', ->
-            $cvc = $('<input type=text>').val('12345')
-            assert.equal false, $cvc.formance('validate_credit_card_cvc')
+validate_with_card_type = (value, card, valid, message) ->
+    $cvc = $('<input type=text>').val(value)
+                                  .data('credit_card_type', card)
+    assert.equal $cvc.formance('validate_credit_card_cvc'), valid, message

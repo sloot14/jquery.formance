@@ -6,73 +6,54 @@ require('../../lib/jquery.formance.js')
 
 describe 'postal_code.js', ->
 
-    describe 'format_postal_code', ->
+    it 'should format the postal code', ->
+        format '',          72,         'H',            'first character is a letter'
+        format '',          52,         '',             'does not allow a digit as the first character'
 
-        it 'should format postal code correctly', ->
-            $postal_code = $('<input type=text>').formance('format_postal_code')
-            $postal_code.val('K1')
+        format 'K',         52,         'K4',           'second character is a digit'
+        format 'K',         72,         'K',            'does not allow a letter as the second character'
 
-            e = $.Event('keypress')
-            e.which = 72 # 'H'
-            $postal_code.trigger(e)
+        format 'K1',        72,         'K1H ',         'third character is a letter'
+        format 'K1',        52,         'K1',           'does not allow a digit as the third character'
 
-            assert.equal 'K1H ', $postal_code.val()
+        format 'K1H ',      52,         'K1H 4',        'fourth character is a digit'
+        format 'K1H ',      72,         'K1H ',         'does not allow a letter as the fourth character'
 
-        it 'should try to insert a letter in place of a number', ->
-            $postal_code = $('<input type=text>').formance('format_postal_code')
-            $postal_code.val('K1H ')
+        format 'K1H 1',     72,         'K1H 1H',       'fifth character is a letter'
+        format 'K1H 1',     52,         'K1H 1',        'does not allow a digit as the fifth character'
 
-            e = $.Event('keypress')
-            e.which = 72 # 'H'
-            $postal_code.trigger(e)
-
-            assert.equal 'K1H ', $postal_code.val()
-
-        it 'should try to insert a number in place of a letter', ->
-            $postal_code = $('<input type=text>').formance('format_postal_code')
-            $postal_code.val('K1H 8')
-
-            e = $.Event('keypress')
-            e.which = 56 # '8'
-            $postal_code.trigger(e)
-
-            assert.equal 'K1H 8', $postal_code.val()
+        format 'K1H 1H',    52,         'K1H 1H4',      'sixth character is a digit'
+        format 'K1H 1H',    72,         'K1H 1H',       'does not allow a letter as the sixth character'
 
 
-    describe 'Validating a postal code', ->
+    it 'should validate the postal code', ->
+        validate 'k1h8k9',     yes,        'valid'
+        validate 'k1h 8k9',    yes,        'valid with space'
+        validate 'K1H 8K9',    yes,        'valid case insensitive'
 
-        it 'should fail if empty', ->
-            $postal_code = $('<input type=text>').val('')
-            assert.equal false, $postal_code.formance('validate_postal_code')
+        validate 'k1h 8k',     no,         'less than 6 characters'
+        validate 'k1 8k9',     no,         'less than 6 characters'
 
-        it 'should fail if it is a bunch of spaces', ->
-            $postal_code = $('<input type=text>').val('          ')
-            assert.equal false, $postal_code.formance('validate_postal_code')
+        validate 'kk1h 8k9',   no,         'more than 6 characters'
+        validate 'k1h 8k99',   no,         'more than 6 characters'
 
-        it 'should succeed if valid', ->
-            $postal_code = $('<input type=text>').val('k1h8k9')
-            assert.equal true, $postal_code.formance('validate_postal_code')
+        validate '',           no,         'empty'
+        validate '      ',     no,         'only spaces'
 
-            $postal_code = $('<input type=text>').val('k1h 8k9')
-            assert.equal true, $postal_code.formance('validate_postal_code')
+        validate 'k1h-8k9',    no,         'contains non-alphanumeric characters'
+        validate 'k1h-8k9',    no,         'contains non-alphanumeric characters'
 
-        it 'should fail if less than 6 characters', ->
-            $postal_code = $('<input type=text>').val('k1h 8k')
-            assert.equal false, $postal_code.formance('validate_postal_code')
+ 
+format = (value, trigger, expected_value, message) ->
+    $postal_code = $('<input type=text>').formance('format_postal_code')
+                                  .val(value)
 
-            $postal_code = $('<input type=text>').val('k1 8k9')
-            assert.equal false, $postal_code.formance('validate_postal_code')
+    e = $.Event('keypress')
+    e.which = trigger
+    $postal_code.trigger(e)
 
-        it 'should fail if more than 6 characters', ->
-            $postal_code = $('<input type=text>').val('kk1h 8k9')
-            assert.equal false, $postal_code.formance('validate_postal_code')
+    assert.equal $postal_code.val(), expected_value, message
 
-            $postal_code = $('<input type=text>').val('k1h 8k91')
-            assert.equal false, $postal_code.formance('validate_postal_code')
-
-        it 'should fail with non alphanumeric characters', ->
-            $postal_code = $('<input type=text>').val('k1h-8k9')
-            assert.equal false, $postal_code.formance('validate_postal_code')
-
-            $postal_code = $('<input type=text>').val('k1hl8k9')
-            assert.equal false, $postal_code.formance('validate_postal_code')
+validate = (value, valid, message) ->
+    $postal_code = $('<input type=text>').val(value)
+    assert.equal $postal_code.formance('validate_postal_code'), valid, message

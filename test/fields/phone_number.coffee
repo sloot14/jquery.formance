@@ -6,80 +6,36 @@ require('../../lib/jquery.formance.js')
 
 describe 'phone_number.js', ->
 
-    describe 'format_phone_number', ->
+    it 'should format the phone number', ->
+        format '',                  52,       '(4',               'appends a ( after the first digit'
+        format '(61',               52,       '(614) ',           'appends a ) after the first 3 digits'
+        format '(614) 12',          52,       '(614) 124 - ',     'appends a - after the first 6 digits'
 
-        it 'should format first digit correctly', ->
-            $phone_number = $('<input type=text>').formance('format_phone_number')
+        format '(614) 12',          100,      '(614) 12',         'does not allow non-digits'
 
-            e = $.Event('keypress')
-            e.which = 52
-            $phone_number.trigger(e)
+    it 'should validate the phone number', ->
+        validate '6131231234',          yes,        'valid'
+        validate '613 123 1234',        yes,        'valid with spaces'
+        validate '(613) 123 - 1234',    yes,        'valid with brackets and dashes'
 
-            assert.equal '(4', $phone_number.val()
-
-        it 'should format area code correctly', ->
-            $phone_number = $('<input type=text>').formance('format_phone_number')
-            $phone_number.val('(61')
-
-            e = $.Event('keypress')
-            e.which = 52
-            $phone_number.trigger(e)
-
-            assert.equal '(614) ', $phone_number.val()
-
-        it 'should format first three correctly', ->
-            $phone_number = $('<input type=text>').formance('format_phone_number')
-            $phone_number.val('(614) 12')
-
-            e = $.Event('keypress')
-            e.which = 52
-            $phone_number.trigger(e)
-
-            assert.equal '(614) 124 - ', $phone_number.val()
-
-        it 'should only allow numbers', ->
-            $phone_number = $('<input type=text>').formance('format_phone_number')
-            $phone_number.val('(61')
-
-            e = $.Event('keypress')
-            e.which = 100 # 'd'
-            $phone_number.trigger(e)
-
-            assert.equal '(61', $phone_number.val()
-
-        # add tests for backspacing
+        validate '',                    no,         'empty'
+        validate '          ',          no,         'only spaces'
+        validate '(123) 12 - 1234',     no,         'less than 10 digits'
+        validate '(123) 123 - 12345',   no,         'more than 10 digits'
+        validate '(123) 123e - 12345',  no,         'contains non-digits'
 
 
-    describe 'Validating a phone number', ->
 
-        it 'should fail if empty', ->
-            $phone_number = $('<input type=text>').val('')
-            assert.equal false, $phone_number.formance('validate_phone_number')
+format = (value, trigger, expected_value, message) ->
+    $phone_number = $('<input type=text>').formance('format_phone_number')
+                                  .val(value)
 
-        it 'should fail if it is a bunch of spaces', ->
-            $phone_number = $('<input type=text>').val('                ')
-            assert.equal false, $phone_number.formance('validate_phone_number')
+    e = $.Event('keypress')
+    e.which = trigger
+    $phone_number.trigger(e)
 
-        it 'should succeed if valid', ->
-            $phone_number = $('<input type=text>').val('6137384446')
-            assert.equal true, $phone_number.formance('validate_phone_number')
+    assert.equal $phone_number.val(), expected_value, message
 
-        it 'has spaces but is valid', ->
-            $phone_number = $('<input type=text>').val('613 738 4446')
-            assert.equal true, $phone_number.formance('validate_phone_number')
-
-        it 'has brackets and dashes but is valid', ->
-            $phone_number = $('<input type=text>').val('(613) 738 - 4446')
-            assert.equal true, $phone_number.formance('validate_phone_number')
-
-        it 'should fail if more than 10 digits', ->
-            $phone_number = $('<input type=text>').val('(123) 456 - 78901')
-            assert.equal false, $phone_number.formance('validate_phone_number')
-
-        it 'should fail if less than 10 digits', ->
-            $phone_number = $('<input type=text>').val('(123) 456 - 789')
-            assert.equal false, $phone_number.formance('validate_phone_number')
-
-        it 'should fail with non digits', ->
-            $phone_number = $('<input type=text>').val('(123) er456 - 789')
-            assert.equal false, $phone_number.formance('validate_phone_number')
+validate = (value, valid, message) ->
+    $phone_number = $('<input type=text>').val(value)
+    assert.equal $phone_number.formance('validate_phone_number'), valid, message

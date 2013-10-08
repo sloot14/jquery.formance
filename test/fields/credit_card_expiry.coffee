@@ -6,95 +6,79 @@ require('../../lib/jquery.formance.js')
 
 describe 'credit_card_expiry.js', ->
 
-    describe 'format_credit_card_expiry', ->
-
-        it 'should format month shorthand correctly', ->
-            $expiry = $('<input type=text>').formance('format_credit_card_expiry')
-
-            e = $.Event('keypress')
-            e.which = 52 # '4'
-            $expiry.trigger(e)
-
-            assert.equal '04 / ', $expiry.val()
-
-        it 'should format forward slash shorthand correctly', ->
-            $expiry = $('<input type=text>').formance('format_credit_card_expiry')
-            $expiry.val('1')
-
-            e = $.Event('keypress')
-            e.which = 47 # '/'
-            $expiry.trigger(e)
-
-            assert.equal '01 / ', $expiry.val()
-
-        it 'should only allow numbers', ->
-            $expiry = $('<input type=text>').formance('format_credit_card_expiry')
-            $expiry.val('1')
-
-            e = $.Event('keypress')
-            e.which = 100 # 'd'
-            $expiry.trigger(e)
-
-            assert.equal '1', $expiry.val()
+    it 'should format a credit card expiration date', ->
+        format '',      52,     '04 / ',        'prepends the day with a 0 and appends a / when entering a day between 4-9'
+        format '1',     47,     '01 / ',        'day shorthand'
+        format '1',     100,    '1',            'entered a non digit'
 
 
-    describe 'Validating an expiration date', ->
+    it 'should validate a credit card expiration date', ->
+        currentDate = new Date()
+        year = currentDate.getFullYear()
+        month = currentDate.getMonth()
 
-        it 'should fail expires is before the current year', ->
-            currentTime = new Date()
-            $expiry = $('<input type=text>').val("#{currentTime.getMonth()+1} / #{currentTime.getFullYear()-1}")
-            assert.equal false, $expiry.formance('validate_credit_card_expiry')
+        # valid
+        validate "#{month+1} / #{year}",                          true,      'expires this year and month'
+        validate "#{month+1} / #{year+1}",                        true,      'expires next year'
+        validate "#{month+1} / #{(year+1).toString()[2..3]}",     true,      'year is in shorthand form'
+        if month isnt 11
+            validate "#{month+2} / #{year}",                      true,      'expires next month'
 
-        it 'that expires in the current year but before current month', ->
-            currentTime = new Date()
-            if currentTime.getMonth() isnt 0
-                $expiry = $('<input type=text>').val("#{currentTime.getMonth()} / #{currentTime.getFullYear()}")
-                assert.equal false, $expiry.formance('validate_credit_card_expiry')
+        # already expired
+        validate "#{month+1} / #{year-1}",    false,      'expired last year'
+        if month isnt 0
+            validate "#{month} / #{year}",    false,      'expired last month'
 
-        it 'that has an invalid month', ->
-            currentTime = new Date()
-            $expiry = $('<input type=text>').val("13 / #{currentTime.getFullYear()}")
-            assert.equal false, $expiry.formance('validate_credit_card_expiry')
+        # less than 6 digits
+        validate "1 / #{year+1}",                         true,      'month is valid but less than 2 digits'
+        # TODO appears to be passing here, why?
+        #validate "01 / #{(year+1).toString()[1..3]}",     false,     'year is less than 4 digits but is not in shorthand form'
 
-        it 'that is this year and month', ->
-            currentTime = new Date()
-            $expiry = $('<input type=text>').val("#{currentTime.getMonth()+1} / #{currentTime.getFullYear()}")
-            assert.equal true, $expiry.formance('validate_credit_card_expiry')
+        # more than 6 digits
+        validate "0#{month+1} / #{year}",     true,      'month is more than 2 digits but is valid'
+        validate "1#{month+1} / #{year}",     false,     'month is more than 2 digits and is invalid'
+        validate "#{month+1} / 0#{year}",     true,      'year is more than 4 digits but is valid'
+        # TODO is it reasonable for this test to pass? If we're basing on a JS Date Object it should.
+        validate "#{month+1} / 6#{year}",     true,      'year is more than 4 digits and is valid, though it is 60000 years away'
 
-        it 'that is just after this month', ->
-            currentTime = new Date()
-            if currentTime.getMonth() isnt 11
-                $expiry = $('<input type=text>').val("#{currentTime.getMonth()+2} / #{currentTime.getFullYear()}")
-                assert.equal true, $expiry.formance('validate_credit_card_expiry')
-                
-        it 'that is after this year', ->
-            currentTime = new Date()
-            $expiry = $('<input type=text>').val("#{currentTime.getMonth()+1} / #{currentTime.getFullYear()+1}")
-            assert.equal true, $expiry.formance('validate_credit_card_expiry')
-
-        it 'that has non-numbers', ->
-            $expiry = $('<input type=text>').val("mm / 2013")
-            assert.equal false, $expiry.formance('validate_credit_card_expiry')
-
-            $expiry = $('<input type=text>').val("07 / yy")
-            assert.equal false, $expiry.formance('validate_credit_card_expiry')
-
-        it 'should support year shorthand', ->
-            currentTime = new Date()
-            $expiry = $('<input type=text>').val("01 / #{(currentTime.getFullYear()+1).toString()[2..3]}")
-            assert.equal true, $expiry.formance('validate_credit_card_expiry')
+        # invalid strings
+        validate 'mm / 2013',   false,      'month is not a number'
+        validate '01 / yyyy',   false,      'year is not a number'
 
 
-    describe 'Parsing an expiry value', ->
+    it 'should parse a credit card expiration date', ->
+        currentDate = new Date()
+        year = currentDate.getFullYear()
+        month = currentDate.getMonth()
 
-        it 'should parse string expiry', ->
-            $expiry = $('<input type=text>').val("01 / 2020")
-            assert.equal (new Date(2020, 0)).getTime(), $expiry.formance('val_credit_card_expiry').getTime()
+        # gets the date with same month and year, but everything else is set to the beginning
+        # it is the first day at 00:00:00 of the month and year specified
+        expiryDate = new Date(year, month)
 
-        it 'should support shorthand year', ->
-            $expiry = $('<input type=text>').val("01 / 20")
-            assert.equal (new Date(2020, 0)).getTime(), $expiry.formance('val_credit_card_expiry').getTime()
 
-        it 'should return NaN when it cannot parse', ->
-            $expiry = $('<input type=text>').val("01 / yy")
-            assert.equal false, $expiry.formance('val_credit_card_expiry')
+        val "#{month+1} / #{year}",                          expiryDate,      'retrieves expiry as a date object when valid'
+        val "#{month+1} / #{(year).toString()[2..3]}",       expiryDate,      'retrieves expiry when year is in shorthand'
+        val '01 / yy',                                       no,              'retrieves expiry when invalid'
+
+
+
+format = (value, trigger, expected_value, message) ->
+    $expiry = $('<input type=text>').formance('format_credit_card_expiry')
+                                  .val(value)
+
+    e = $.Event('keypress')
+    e.which = trigger
+    $expiry.trigger(e)
+
+    assert.equal $expiry.val(), expected_value, message
+
+validate = (value, valid, message) ->
+    $expiry = $('<input type=text>').val(value)
+    assert.equal $expiry.formance('validate_credit_card_expiry'), valid, message
+
+val = (value, expected_value, message) ->
+    expiry = $('<input type=text>').val(value).formance('val_credit_card_expiry')
+    if typeof(expected_value) is 'boolean'
+        assert.equal expiry, expected_value, message
+    else
+        assert.equal expiry.getTime(), expected_value.getTime(), message

@@ -6,62 +6,32 @@ require('../lib/jquery.formance.js')
 
 describe 'jquery.formance.js', ->
 
-    describe 'restrictNumeric', ->
+    it 'should restrict to numeric characters', ->
+        format_numeric '123',       52,        '1234',          'allows digits'
+        format_numeric '123',       100,       '123',           'does not allow letters'
+        format_numeric '123',       189,       '123',           'does not allow special characters'
 
-        it 'should allow digits to be entered', ->
-            $field = $('<input type=text>').formance('restrictNumeric')
-            $field.val('123')
-
-            e = $.Event('keypress')
-            e.which = 52 # '4'
-            $field.trigger(e)
-
-            assert.equal $field.val(), '1234'
-
-        it 'should restrict letters from being entered', ->
-            $field = $('<input type=text>').formance('restrictNumeric')
-
-            e = $.Event('keypress')
-            e.which = 68 # 'd'
-            $field.trigger(e)
-
-            assert.equal $field.val(), ''
- 
-        it 'should restrict special characters from being entered', ->
-            $field = $('<input type=text>').formance('restrictNumeric')
-
-            e = $.Event('keypress')
-            e.which = 189 # '-'
-            $field.trigger(e)
-
-            assert.equal $field.val(), ''
+    it 'should restrict to alphanumeric characters', ->
+        format_alphanumeric '',     52,         '4',            'allows digits'
+        format_alphanumeric '',     68,         'd',            'allows letters'
+        format_alphanumeric '',     189,        '',             'does not allow special characters'
 
 
-    describe 'restrictAlphaNumeric', ->
+# TODO
+# looks at how to curry these methods, so we can do
+# format_numeric = format.curry('restrictNumeric')
+# format_alphanumeric = format.curry('restrictAlphaNumeric')
+format_numeric = (value, trigger, expected_value, message) ->
+    format 'restrictNumeric', value, trigger, expected_value, message
+format_alphanumeric = (value, trigger, expected_value, message) ->
+    format 'restrictAlphaNumeric', value, trigger, expected_value, message
 
-        it 'should allow digits to be entered', ->
-            $field = $('<input type=text>').formance('restrictAlphaNumeric')
+format = (field, value, trigger, expected_value, message) ->
+    $field = $('<input type=text>').formance(field)
+                                  .val(value)
 
-            e = $.Event('keypress')
-            e.which = 52 # '4'
-            $field.trigger(e)
+    e = $.Event('keypress')
+    e.which = trigger
+    $field.trigger(e)
 
-            assert.equal $field.val(), '4'
-
-        it 'should allow letters to be entered', ->
-            $field = $('<input type=text>').formance('restrictAlphaNumeric')
-
-            e = $.Event('keypress')
-            e.which = 68 # 'd'
-            $field.trigger(e)
-
-            assert.equal $field.val(), 'd'
-
-        it 'should restrict special characters from being entered', ->
-            $field = $('<input type=text>').formance('restrictAlphaNumeric')
-
-            e = $.Event('keypress')
-            e.which = 189 # '-'
-            $field.trigger(e)
-
-            assert.equal $field.val(), ''
+    assert.equal $field.val(), expected_value, message
