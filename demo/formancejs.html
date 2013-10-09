@@ -43,7 +43,6 @@
                 <li><a href="#credit_card_expiry">Credit Card Expiry</a></li>
                 <li><a href="#credit_card_number">Credit Card Number</a></li>
                 <li><a href="#dd_mm_yyyy">Date dd / mm / yyyy </a></li>
-                <li><a href="#yy_mm">Date yy / mm</a></li>
                 <li><a href="#yyyy_mm_dd">Date yyyy / mm / dd</a></li>
                 <li><a href="#email">Email Address</a></li>
                 <li><a href="#number">Number</a></li>
@@ -52,6 +51,7 @@
                 <li><a href="#ontario_outdoors_card_number">Ontario Outdoors Card Number</a></li>
                 <li><a href="#phone_number">Phone Number (North America)</a></li>
                 <li><a href="#postal_code">Postal Code (Canada)</a></li>
+                <li><a href="#time_yy_mm">Time yy / mm</a></li>
                 <li><a href="#uk_sort_code">Uk Sort Code</a></li>
             </ul>
         </div>
@@ -122,54 +122,6 @@
              </pre> </div>
 
         </div>
-
-        <div class='field' id='yy_mm'>
-            <h4>Date YY / MM</h4>
-            <p> <input type="text" class="yy_mm" pattern="\d*" x-autocompletetype="yy_mm" placeholder="Date YY / MM" required> </p>
-            <p>Formats the date in years and months:</p>
-            <p>Useful for inputting time in years and months. For example, duration of employment or residency.</p>
-
-            <ul>
-                <li>Limits to 4 numbers</li>
-                <li>Restricts input to numbers</li>
-                <li>Includes a slash between every 2 digits</li>
-            </ul>
-            <div class="highlight highlight-javascript"><pre>
-<span class="nx">$</span><span class="p">(</span><span class="s1">'input.yy_mm'</span><span class="p">).</span><span class="nx">formance</span><span class="p">(</span><span class="s1">'format_yy_mm'</span><span class="p">);</span>
-             </pre></div>
-
-            <p>Validates the date in years and months:</p>
-            <ul>
-                <li>Validates numbers</li>
-                <li>Validates length</li>
-            </ul>
-            <div class="highlight highlight-javascript">
-            <pre>
-        <span class="nx">$</span><span class="p">(</span><span class="s1">'input.yy_mm'</span><span class="p">).</span><span class="nx">formance</span><span class="p">(</span><span class="s1">'validate_yy_mm'</span><span class="p">);</span> 
-<span class="c1">//examples</span> 
-<span class="nx">$</span><span class="p">(</span><span class="s2">"&lt;input value='09 / 09' /&gt;"</span><span class="p">).</span><span class="nx">formance</span><span class="p">(</span><span class="s1">'validate_yy_mm'</span><span class="p">);</span>   <span class="c1">// true</span> 
-<span class="nx">$</span><span class="p">(</span><span class="s2">"&lt;input value='10 /' /&gt;"</span><span class="p">).</span><span class="nx">formance</span><span class="p">(</span><span class="s1">'validate_yy_mm'</span><span class="p">);</span>   <span class="c1">// false</span> 
-             </pre></div>
-
-        </div>
-
-        <div class='field' id='yyyy_mm_dd'>
-            <h4>Date YYYY / MM / DD</h4>
-            <p> <input type="text" class='yyyy_mm_dd' placeholder="Date YYYY / MM / DD"> </p>
-
-            <p>Similar to documentation of <a href='#dd_mm_yyyy'>dd / mm / yyyy</a> except the format is <code>yyyy / mm / dd</code>.</p>
-        </div>
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -506,6 +458,42 @@
 
 
         </div>
+          <div class='field' id='time_yy_mm'>
+            <h4>Time YY / MM</h4>
+            <p> <input type="text" class="time_yy_mm" pattern="\d*" x-autocompletetype="time_yy_mm" placeholder="Time YY / MM" required> </p>
+            <p>Formats a time in years and months:</p>
+            <p>Useful for inputting time in years and months. For example, duration of employment or residency.</p>
+
+            <ul>
+                <li>Limits to 4 numbers</li>
+                <li>Restricts input to numbers</li>
+                <li>Includes a slash between every 2 digits</li>
+            </ul>
+            <div class="highlight highlight-javascript"><pre>
+<span class="nx">$</span><span class="p">(</span><span class="s1">'input.time_yy_mm'</span><span class="p">).</span><span class="nx">formance</span><span class="p">(</span><span class="s1">'format_time_yy_mm'</span><span class="p">);</span>
+             </pre></div>
+
+            <p>Validates the time in years and months:</p>
+            <ul>
+                <li>Validates numbers</li>
+                <li>Validates length</li>
+            </ul>
+            <div class="highlight highlight-javascript">
+            <pre>
+        <span class="nx">$</span><span class="p">(</span><span class="s1">'input.time_yy_mm'</span><span class="p">).</span><span class="nx">formance</span><span class="p">(</span><span class="s1">'validate_time_yy_mm'</span><span class="p">);</span> 
+<span class="c1">//examples</span> 
+<span class="nx">$</span><span class="p">(</span><span class="s2">"&lt;input value='09 / 09' /&gt;"</span><span class="p">).</span><span class="nx">formance</span><span class="p">(</span><span class="s1">'validate_time_yy_mm'</span><span class="p">);</span>   <span class="c1">// true</span> 
+<span class="nx">$</span><span class="p">(</span><span class="s2">"&lt;input value='10 /' /&gt;"</span><span class="p">).</span><span class="nx">formance</span><span class="p">(</span><span class="s1">'validate_time_yy_mm'</span><span class="p">);</span>   <span class="c1">// false</span> 
+             </pre></div>
+
+        </div>
+
+        <div class='field' id='yyyy_mm_dd'>
+            <h4>Date YYYY / MM / DD</h4>
+            <p> <input type="text" class='yyyy_mm_dd' placeholder="Date YYYY / MM / DD"> </p>
+
+            <p>Similar to documentation of <a href='#dd_mm_yyyy'>dd / mm / yyyy</a> except the format is <code>yyyy / mm / dd</code>.</p>
+        </div>
   <div class='field' id='uk_sort_code'>
             <h4>Uk Sort Code</h4>
             <p> <input type="text" class="uk_sort_code" pattern="\d*" x-autocompletetype="uk_sort_code" placeholder="Uk sort code" required> </p>
@@ -535,6 +523,7 @@
              </pre></div>
 
         </div>
+          
 
       </section>
       <footer>
