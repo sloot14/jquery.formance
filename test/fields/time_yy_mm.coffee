@@ -42,11 +42,15 @@ describe 'time_yy_mm.js', ->
 
         it 'should success if is less than 4 digits', ->
             $num = $('<input type=text>').val('0 / 1')
-            assert.equal true, $num.formance('validate_time_yy_mm')            
+            assert.equal true, $num.formance('validate_time_yy_mm')
 
         it 'should fail if no slash inputted and greater than 2 digits', ->
             $num = $('<input type=text>').val('0010')
             assert.equal false, $num.formance('validate_time_yy_mm')
+
+        it 'should success if there are years and months greater than 12', ->
+            $num = $('<input type=text>').val('01/13')
+            assert.equal true, $num.formance('validate_time_yy_mm')
 
         it 'should success if no years and months greater than 12', ->
             $num = $('<input type=text>').val('00/24')

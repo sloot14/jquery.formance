@@ -76,12 +76,12 @@ formatBackTimeYYMM = (e) ->
 		$target.val(value.replace(/\s\/\s?\d?$/, ''))
 
 $.formance.fn.format_time_yy_mm = ->
-	@formance "restrictNumeric"
+	@.formance "restrictNumeric"
 	@on "keypress", restrictTimeYYMM
 	@on "keypress", formatTimeYYMM
 	@on "keypress", formatForwardTimeYYMM
 	@on "keypress", formatForwardSlashTimeYYMM
-	@on "keypress", formatBackTimeYYMM
+	@on "keydown", formatBackTimeYYMM
 	this
 
 
