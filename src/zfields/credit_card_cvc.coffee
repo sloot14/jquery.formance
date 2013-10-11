@@ -1,5 +1,4 @@
 $ = jQuery
-hasTextSelected = $.formance.fn.hasTextSelected
 
 # Utils
 
@@ -80,36 +79,32 @@ cards = [
   }
 ]
 
-cardFromNumber = (num) ->
-    num = (num + '').replace(/\D/g, '')
-    return card for card in cards when card.pattern.test(num)
+class CreditCardCVCField extends NumericFormanceField
 
-cardFromType = (type) ->
-    return card for card in cards when card.type is type
-  
-restrictCVC = (e) ->
-	$target = $(e.currentTarget)
-	digit   = String.fromCharCode(e.which)
-	return unless /^\d+$/.test(digit)
+    restrict_field_callback: (e, val) =>
+        val.length <= 4
 
-	val     = $target.val() + digit
-	val.length <= 4
+    validate: () ->
+        type = @field.data('credit_card_type')
+        cvc = @field.val()
+        cvc = $.trim(cvc)
+        return false unless /^\d+$/.test(cvc)
+
+        if type
+            # Check against a explicit card type
+            cvc.length in @card_from_type(type)?.cvcLength
+        else
+            # Check against all types
+            cvc.length >= 3 and cvc.length <= 4
+
+    card_from_type: (type) ->
+        return card for card in cards when card.type is type
 
 $.formance.fn.format_credit_card_cvc = ->
-	@.formance('restrictNumeric')
-	@on('keypress', restrictCVC)
+    field = new CreditCardCVCField this
+    field.format()
 	this
 
 $.formance.fn.validate_credit_card_cvc = ->
-    type = $(this).data('credit_card_type')
-    cvc = $(this).val()
-    cvc = $.trim(cvc)
-    return false unless /^\d+$/.test(cvc)
-
-    if type
-        # Check against a explicit card type
-        cvc.length in cardFromType(type)?.cvcLength
-    else
-        # Check against all types
-        cvc.length >= 3 and cvc.length <= 4
-
+    field = new CreditCardCVCField this
+    field.validate()

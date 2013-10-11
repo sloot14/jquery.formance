@@ -1,6 +1,6 @@
 $ = jQuery
 
-class DateDDMMMYYYYField extends FormanceField
+class DateDDMMMYYYYField extends NumericFormanceField
 
     restrict_field_callback: (e, val) =>
         return false if val.length > 8
@@ -35,14 +35,46 @@ class DateDDMMMYYYYField extends FormanceField
             if month isnt '0'
                 $target.val("#{day} / 0#{month} / ")
 
-    format_backspace_callback: (e, $target, value) =>
+    format_backspace_callback: (e, $target, val) =>
         # Remove the trailing space
-        if /\d(\s|\/)+$/.test(value)
+        if /\d(\s|\/)+$/.test(val)
             e.preventDefault()
-            $target.val(value.replace(/\d(\s|\/)*$/, ''))
-        else if /\s\/\s?\d?$/.test(value)
+            $target.val(val.replace(/\d(\s|\/)*$/, ''))
+        else if /\s\/\s?\d?$/.test(val)
             e.preventDefault()
-            $target.val(value.replace(/\s\/\s?\d?$/, ''))
+            $target.val(val.replace(/\s\/\s?\d?$/, ''))
+
+
+    validate: () ->
+        date_dict = @parse_date @field.val()
+        date = @val()
+
+        return no unless date? and date instanceof Date
+        return no unless date.getDate()     is date_dict.day
+        return no unless date.getMonth()+1  is date_dict.month
+        return no unless date.getFullYear() is date_dict.year
+        return yes
+
+    val: () ->
+        date = @parse_date @field.val()
+
+        return no if not date.day? or isNaN(date.day)
+        return no if not date.month? or isNaN(date.month)
+        return no if not date.year? or isNaN(date.year)
+        new Date date.year, date.month-1, date.day
+    
+    parse_date: (date_string) ->
+        [day, month, year] = if date_string? then date_string.replace(/\s/g, '').split('/', 3) else [NaN, NaN, NaN]
+
+        # day and month have a limited set of values, but year is opened ended
+        # if a user wants 01 / 01 / 200 then do 01 / 01 / 0200
+        year = NaN unless year? and year.length is 4
+        
+        day     = parseInt(day, 10)
+        month   = parseInt(month, 10)
+        year    = parseInt(year, 10)
+
+        return day: day, month: month, year: year
 
 
 $.formance.fn.format_dd_mm_yyyy = ->
@@ -50,37 +82,10 @@ $.formance.fn.format_dd_mm_yyyy = ->
     field.format()
     this
 
-# ------------------------------
-# Validating Date DD / MM / YYYY
-# ------------------------------
-
-parseDateDDMMYYYY = (date_string) ->
-    [day, month, year] = if date_string? then date_string.replace(/\s/g, '').split('/', 3) else [NaN, NaN, NaN]
-
-    # day and month have a limited set of values, but year is opened ended
-    # if a user wants 01 / 01 / 200 then do 01 / 01 / 0200
-    year = NaN unless year? and year.length is 4
-    
-    day     = parseInt(day, 10)
-    month   = parseInt(month, 10)
-    year    = parseInt(year, 10)
-
-    return day: day, month: month, year: year
+$.formance.fn.validate_dd_mm_yyyy = ->
+    field = new DateDDMMMYYYYField this
+    field.validate()
 
 $.formance.fn.val_dd_mm_yyyy = ->
-    date = parseDateDDMMYYYY @.val()
-
-    return no if not date.day? or isNaN(date.day)
-    return no if not date.month? or isNaN(date.month)
-    return no if not date.year? or isNaN(date.year)
-    new Date date.year, date.month-1, date.day
-
-$.formance.fn.validate_dd_mm_yyyy = ->
-    date_dict = parseDateDDMMYYYY @.val()
-    date = @.formance('val_dd_mm_yyyy')
-
-    return no unless date? and date instanceof Date
-    return no unless date.getDate() is date_dict.day
-    return no unless date.getMonth()+1 is date_dict.month
-    return no unless date.getFullYear() is date_dict.year
-    return yes
+    field = new DateDDMMMYYYYField this
+    field.val()

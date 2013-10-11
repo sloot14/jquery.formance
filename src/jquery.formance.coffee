@@ -7,36 +7,35 @@ $.fn.formance = (method, args...) ->
 
 class FormanceField
 
-    constructor: (@field) ->
+    constructor: (@field, @regex, @replace_regex) ->
 
     restrict_field: (e) =>
         $target = $(e.currentTarget)
-        digit   = String.fromCharCode(e.which)
-        return unless /^\d+$/.test(digit)
+        input   = String.fromCharCode(e.which)
+        return unless @regex.test(input)
 
         return if @has_text_selected($target)
         
-        value = $target.val() + digit
-        value = value.replace(/\D/g, '')
+        value = $target.val() + input
+        value = value.replace(@replace_regex, '')
 
         @restrict_field_callback(e, value)
 
     format_field: (e) =>
-        # only format if input is a digit
-        digit = String.fromCharCode(e.which)
-        return unless /^\d+$/.test(digit)
+        input = String.fromCharCode(e.which)
+        return unless @regex.test(input)
 
         $target = $(e.currentTarget)
         old_val = $target.val()
-        new_val = old_val + digit
+        new_val = old_val + input
+        
+        return if @end_of_text($target)
 
-        #TODO rename to digit to input
-        @format_field_callback(e, $target, old_val, digit, new_val)
+        @format_field_callback(e, $target, old_val, input, new_val)
         
     format_forward: (e) =>
-        # handles when the user enters the second digit
-        digit = String.fromCharCode(e.which)
-        return unless /^\d+$/.test(digit)
+        input = String.fromCharCode(e.which)
+        return unless @regex.test(input)
 
         $target = $(e.currentTarget)
         val     = $target.val()
@@ -62,19 +61,29 @@ class FormanceField
         # Return unless backspacing
         return unless e.which is 8
 
-        # Return if focus isn't at the end of the text
-        return if $target.prop('selectionStart')? and
-            $target.prop('selectionStart') isnt value.length
+        return if @end_of_text($target)
 
         @format_backspace_callback(e, $target, value)
 
+    format_paste: (e) =>
+        setTimeout => # it takes a bit of time for the paste event to add the input, so wait a bit
+            $target = $(e.currentTarget)
+            val = $target.val()
+
+            @format_paste_callback(e, $target, val)
+
     format: () ->
-        @field.on('keypress', @restrict_numeric)
         @field.on('keypress', @restrict_field)          if @restrict_field_callback?
         @field.on('keypress', @format_field)            if @format_field_callback?
         @field.on('keypress', @format_forward)          if @format_forward_callback?
         @field.on('keypress', @format_forward_slash)    if @format_forward_slash_callback?
         @field.on('keydown',  @format_backspace)        if @format_backspace_callback?
+        @field.on('paste',    @format_paste)            if @format_paste_callback?
+
+    end_of_text: ($target) =>
+        # is focus at the end of the text
+        $target.prop('selectionStart')? and
+            $target.prop('selectionStart') isnt value.length
 
     has_text_selected: ($target) =>
         # if some text is selected
@@ -106,21 +115,29 @@ class FormanceField
 
         !!regex.test(input)
 
+
+class NumericFormanceField extends FormanceField
+
+    constructor: (@field) ->
+        super @field, /^\d+$/, /\D/g
+
     restrict_numeric: (e) =>
         # Char is a number or a space
         @restrict(/[\d\s]/, e)
+
+    format: () ->
+        @field.on('keypress', @restrict_numeric)
+        super
+
+class AlphanumericFormanceField extends FormanceField
+
+    constructor: (@field) ->
+        super @field, /^[A-Za-z\d]+$/, /[^A-Za-z\d]/g
 
     restrict_alphanumeric: (e) =>
         # Char is a number, letter or space
         @restrict(/[\d\sA-Za-z]/, e)
 
-
-$.formance.fn.restrictNumeric = ->
-  @on('keypress', FormanceField.restrict_numeric)
-  this
-
-$.formance.fn.restrictAlphaNumeric = ->
-  @on('keypress', FormanceField.restrict_alphanumeric)
-  this
-
-$.formance.fn.hasTextSelected = FormanceField.has_text_selected
+    format: () ->
+        @field.on('keypress', @restrict_alphanumeric)
+        super

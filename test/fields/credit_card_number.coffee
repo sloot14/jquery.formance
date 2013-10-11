@@ -85,4 +85,4 @@ validate = (value, valid, message) ->
     assert.equal $number.formance('validate_credit_card_number'), valid, message
 
 card_type = (value, card, message) ->
-    assert.equal $.formance.creditCardType(value), card, message
+    assert.equal $.formance.credit_card_type(value), card, message

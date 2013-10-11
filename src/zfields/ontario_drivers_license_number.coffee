@@ -1,83 +1,48 @@
 $ = jQuery
-hasTextSelected = $.formance.fn.hasTextSelected
 
-restrictOntarioDriversLicenseNumber = (e) ->
-    $target = $(e.currentTarget)
-    char   = String.fromCharCode(e.which)
+class OntarioDriversLicenseNumberField extends AlphanumericFormanceField
 
-    return unless /^[a-zA-Z\d]+$/.test(char)
+    restrict_field_callback: (e, val) =>
+        return false if val.length > 15
 
-    return if hasTextSelected($target)
+    format_field_callback: (e, $target, old_val, input, new_val) =>
+        old_val = old_val.toUpperCase()
+        input   = input.toUpperCase()
+        new_val = new_val.toUpperCase()
 
-    value = $target.val() + char
-    value = value.replace(/[^a-zA-Z\d]/g, '')
+        if /^[A-Z]$/i.test(new_val) or
+            /^[A-Z]\d{0,4}$/i.test(new_val) or
+            /^[A-Z]\d{4}[\s|\-]*\d{0,5}$/i.test(new_val) or
+            /^[A-Z]\d{4}[\s|\-]*\d{5}[\s|\-]*\d{0,5}$/i.test(new_val)
 
-    return false if value.length > 15
+                e.preventDefault()
+                $target.val new_val
 
-formatOntarioDriversLicenseNumber = (e) ->
-    char = String.fromCharCode(e.which)
-    return unless /^[a-zA-Z\d]+$/.test(char)
+        if /^[A-Z]\d{4}$/.test(new_val) or
+            /^[A-Z]\d{4}[\s|\-]*\d{5}$/.test(new_val)
 
-    $target = $(e.currentTarget)
-    old_val = $target.val()
-    val = old_val + char.toUpperCase()
+                e.preventDefault()
+                $target.val "#{new_val} - "
 
-    if old_val is ''
-        e.preventDefault()
-        $target.val(val) if /^[A-Za-z]$/.test(val)
+    format_backspace_callback: (e, $target, val) =>
+        if /\d(\s|\-)+$/.test(val)
+            e.preventDefault()
+            $target.val(val.replace(/\d(\s|\-)+$/, ''))
 
-    else if /^[A-Za-z]\d{0,3}$/.test(old_val)
-        e.preventDefault()
-        val = "#{val} - " if /^[A-Za-z]\d{4}$/.test(val)
-        $target.val(val) if /^[A-Za-z]\d{0,4}[\s|\-]*$/.test(val)
-
-    else if /^[A-Za-z]\d{4}[\s|\-]*\d{0,4}$/.test(old_val)
-        e.preventDefault()
-        val = "#{val} - " if /^[A-Za-z]\d{4}[\s|\-]*\d{5}$/.test(val)
-        $target.val(val) if /^[A-Za-z]\d{4}[\s|\-]*\d{0,5}[\s|\-]*$/.test(val)
-
-
-formatBackOntarioDriversLicenseNumber = (e) ->
-     # If shift+backspace is pressed
-    return if e.meta
-
-    $target = $(e.currentTarget)
-    value   = $target.val()
-
-    # Return unless backspacing
-    return unless e.which is 8
-
-     # Return if focus isn't at the end of the text
-    return if $target.prop('selectionStart')? and
-        $target.prop('selectionStart') isnt value.length
-  
-    if /\d(\s|\-)+$/.test(value)
-        e.preventDefault()
-        $target.val(value.replace(/\d(\s|\-)+$/, ''))
-
-
-formatPasteOntarioDriversLicenseNumber = (e) ->
-    setTimeout =>
-        $target = $(e.currentTarget)
-        val = $target.val()
-
-        [full, first5, middle5, last5] = val.match(/^([A-Za-z\d]{5})[\s|\-]*(\d{5})[\s|\-]*(\d{5})$/)
+    format_paste_callback: (e, $target, val) =>
+        [full, first5, middle5, last5] = val.match(/^([A-Z\d]{5})[\s|\-]*(\d{5})[\s|\-]*(\d{5})$/i)
         $target.val("#{first5} - #{middle5} - #{last5}")
 
+    validate: () ->
+        val = @field.val()
+        regex = /^[A-Z]\d{4}[\s|\-]*\d{5}[\s|\-]*\d{5}$/i
+        return regex.test(val)
 
 $.formance.fn.format_ontario_drivers_license_number = ->
-    @.formance('restrictAlphaNumeric')
-    @on('keypress', restrictOntarioDriversLicenseNumber)
-    @on('keypress', formatOntarioDriversLicenseNumber)
-    @on('keydown',  formatBackOntarioDriversLicenseNumber)
-    @on('paste',  formatPasteOntarioDriversLicenseNumber)
+    field = new OntarioDriversLicenseNumberField this
+    field.format()
     this
 
 $.formance.fn.validate_ontario_drivers_license_number = ->
-    val = $(this).val()
-    return false unless val?
-    val = val.replace(/[\s|\-]/g, '')
-    return false unless /^[a-zA-Z\d]+$/.test()
-
-    regex = /^[A-Za-z]\d{4}[\s|\-]*\d{5}[\s|\-]*\d{5}$/
-    return regex.test(val)
+    field = new OntarioDriversLicenseNumberField this
+    field.validate()

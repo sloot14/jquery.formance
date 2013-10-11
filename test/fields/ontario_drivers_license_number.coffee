@@ -23,6 +23,7 @@ describe 'ontario_drivers_license_number.js', ->
     it 'should validate an ontario drivers license number', ->
         validate 'A12341234512345',             yes,        'valid'
         validate 'A1234 - 12345 - 12345',       yes,        'valid with dashes and spaces'
+        validate 'a1234 - 12345 - 12345',       yes,        'valid case insensitive'
 
         validate '',                            no,         'empty'
         validate '              ',              no,         'only spaces'

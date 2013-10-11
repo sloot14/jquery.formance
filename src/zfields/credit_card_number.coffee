@@ -1,5 +1,4 @@
 $ = jQuery
-hasTextSelected = $.formance.fn.hasTextSelected
 
 # Utils
 
@@ -80,162 +79,132 @@ cards = [
   }
 ]
 
-cardFromNumber = (num) ->
-    num = (num + '').replace(/\D/g, '')
-    return card for card in cards when card.pattern.test(num)
+class CreditCardNumberField extends NumericFormanceField
 
-cardFromType = (type) ->
-    return card for card in cards when card.type is type
+    restrict_field_callback: (e, val) =>
+        card = @card_from_number(val)
 
-luhnCheck = (num) ->
-    odd = true
-    sum = 0
+        if card
+            val.length <= card.length[card.length.length - 1]
+        else
+            # All other cards are 16 digits long
+            val.length <= 16
 
-    digits = (num + '').split('').reverse()
+    format_field_callback: (e, $target, old_val, digit, new_val) =>
+        card    = @card_from_number(new_val)
+        length  = (old_val.replace(/\D/g, '') + digit).length
 
-    for digit in digits
-        digit = parseInt(digit, 10)
-        digit *= 2 if (odd = !odd)
-        digit -= 9 if digit > 9
-        sum += digit
-  
-    sum % 10 == 0
+        upperLength = 16
+        upperLength = card.length[card.length.length - 1] if card
+        return if length >= upperLength
 
-# Format Card Number
+        if card && card.type is 'amex'
+            # Amex cards are formatted differently
+            re = /^(\d{4}|\d{4}\s\d{6})$/
+        else
+            re = /(?:^|\s)(\d{4})$/
 
-restrictCardNumber = (e) ->
-    $target = $(e.currentTarget)
-    digit   = String.fromCharCode(e.which)
-    return unless /^\d+$/.test(digit)
+        # If '4242' + 4
+        if re.test(old_val)
+            e.preventDefault()
+            $target.val(old_val + ' ' + digit)
 
-    return if hasTextSelected($target)
+        # If '424' + 2
+        else if re.test(new_val)
+            e.preventDefault()
+            $target.val(new_val + ' ')
 
-    # Restrict number of digits
-    value = ($target.val() + digit).replace(/\D/g, '')
-    card  = cardFromNumber(value)
+    format_paste_callback: (e, $target, val) =>
+        $target.val @format_credit_card_number(val)
 
-    if card
-        value.length <= card.length[card.length.length - 1]
-    else
-        # All other cards are 16 digits long
-        value.length <= 16
+    format_backspace_callback: (e, $target, val) =>
+        # Remove the trailing space
+        if /\d\s$/.test(val)
+            e.preventDefault()
+            $target.val(val.replace(/\d\s$/, ''))
+        else if /\s\d?$/.test(val)
+            e.preventDefault()
+            $target.val(val.replace(/\s\d?$/, ''))
 
-reFormatCardNumber = (e) ->
-    setTimeout =>
-        $target = $(e.currentTarget)
-        value   = $target.val()
-        value   = $.formance.formatCardNumber(value)
-        $target.val(value)
+    format: () ->
+        super
+        @field.on('keyup', @set_card_type)
+        this
 
-formatCardNumber = (e) ->
-    # Only format if input is a number
-    digit = String.fromCharCode(e.which)
-    return unless /^\d+$/.test(digit)
+    card_from_number: (num) ->
+        num = (num + '').replace(/\D/g, '')
+        return card for card in cards when card.pattern.test(num)
 
-    $target = $(e.currentTarget)
-    value   = $target.val()
-    card    = cardFromNumber(value + digit)
-    length  = (value.replace(/\D/g, '') + digit).length
+    card_from_type: (type) ->
+        return card for card in cards when card.type is type
 
-    upperLength = 16
-    upperLength = card.length[card.length.length - 1] if card
-    return if length >= upperLength
+    credit_card_type: (num) ->
+        return null unless num
+        @card_from_number(num)?.type or null
 
-    # Return if focus isn't at the end of the text
-    return if $target.prop('selectionStart')? and
-        $target.prop('selectionStart') isnt value.length
+    luhn_check: (num) ->
+        odd = true
+        sum = 0
 
-    if card && card.type is 'amex'
-        # Amex cards are formatted differently
-        re = /^(\d{4}|\d{4}\s\d{6})$/
-    else
-        re = /(?:^|\s)(\d{4})$/
+        digits = (num + '').split('').reverse()
 
-    # If '4242' + 4
-    if re.test(value)
-        e.preventDefault()
-        $target.val(value + ' ' + digit)
+        for digit in digits
+            digit = parseInt(digit, 10)
+            digit *= 2 if (odd = !odd)
+            digit -= 9 if digit > 9
+            sum += digit
+      
+        sum % 10 == 0
 
-    # If '424' + 2
-    else if re.test(value + digit)
-        e.preventDefault()
-        $target.val(value + digit + ' ')
+    set_card_type:  (e) ->
+        $target  = $(e.currentTarget)
+        val      = $target.val()
+        cardType = @credit_card_type(val) or 'unknown'
 
-formatBackCardNumber = (e) ->
-    $target = $(e.currentTarget)
-    value   = $target.val()
- 
-    return if e.meta
+        unless $target.hasClass(cardType)
+            allTypes = (card.type for card in cards)
 
-    # Return unless backspacing
-    return unless e.which is 8
+            $target.removeClass('unknown')
+            $target.removeClass(allTypes.join(' '))
 
-    # Return if focus isn't at the end of the text
-    return if $target.prop('selectionStart')? and
-        $target.prop('selectionStart') isnt value.length
+            $target.addClass(cardType)
+            $target.toggleClass('identified', cardType isnt 'unknown')
+            $target.trigger('payment.cardType', cardType)
 
-    # Remove the trailing space
-    if /\d\s$/.test(value)
-        e.preventDefault()
-        $target.val(value.replace(/\d\s$/, ''))
-    else if /\s\d?$/.test(value)
-        e.preventDefault()
-        $target.val(value.replace(/\s\d?$/, ''))
+    format_credit_card_number: (num) ->
+        card = @card_from_number(num)
+        return num unless card
 
+        upperLength = card.length[card.length.length - 1]
 
+        num = num.replace(/\D/g, '')
+        num = num[0..upperLength]
 
-setCardType = (e) ->
-    $target  = $(e.currentTarget)
-    val      = $target.val()
-    cardType = $.formance.creditCardType(val) or 'unknown'
+        if card.format.global
+            num.match(card.format)?.join(' ')
+        else
+            groups = card.format.exec(num)
+            groups?.shift()
+            groups?.join(' ')
 
-    unless $target.hasClass(cardType)
-        allTypes = (card.type for card in cards)
+    validate: () ->
+        num = @field.val()
+        num = (num + '').replace(/\s+|-/g, '')
+        return false unless /^\d+$/.test(num)
 
-        $target.removeClass('unknown')
-        $target.removeClass(allTypes.join(' '))
+        card = @card_from_number(num)
+        return false unless card
 
-        $target.addClass(cardType)
-        $target.toggleClass('identified', cardType isnt 'unknown')
-        $target.trigger('payment.cardType', cardType)
-
-$.formance.creditCardType = (num) ->
-    return null unless num
-    cardFromNumber(num)?.type or null
-
-$.formance.formatCreditCardNumber = (num) ->
-    card = cardFromNumber(num)
-    return num unless card
-
-    upperLength = card.length[card.length.length - 1]
-
-    num = num.replace(/\D/g, '')
-    num = num[0..upperLength]
-
-    if card.format.global
-        num.match(card.format)?.join(' ')
-    else
-        groups = card.format.exec(num)
-        groups?.shift()
-        groups?.join(' ')
-
+        num.length in card.length and
+            (card.luhn is false or @luhn_check(num))
 
 $.formance.fn.format_credit_card_number = ->
-    @.formance('restrictNumeric')
-    @on('keypress', restrictCardNumber)
-    @on('keypress', formatCardNumber)
-    @on('keydown', formatBackCardNumber)
-    @on('keyup', setCardType)
-    @on('paste', reFormatCardNumber)
+    field = new CreditCardNumberField this
+    field.format()
     this
 
 $.formance.fn.validate_credit_card_number = ->
-    num = $(this).val()
-    num = (num + '').replace(/\s+|-/g, '')
-    return false unless /^\d+$/.test(num)
+    field = new CreditCardNumberField this
+    field.validate()
 
-    card = cardFromNumber(num)
-    return false unless card
-
-    num.length in card.length and
-        (card.luhn is false or luhnCheck(num))
+$.formance.credit_card_type = CreditCardNumberField.credit_card_type
