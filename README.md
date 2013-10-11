@@ -28,10 +28,8 @@ Read this wiki article on [how to get started](https://github.com/omarshammas/jq
 * [Credit Card CVC](https://github.com/omarshammas/jquery.formance/wiki/Credit-Card-CVC)
 * [Credit Card Expiry](https://github.com/omarshammas/jquery.formance/wiki/Credit-Card-Expiry)
 * [Credit Card Number](https://github.com/omarshammas/jquery.formance/wiki/Credit-Card-Number)
-* [Uk Sort Code](https://github.com/omarshammas/jquery.formance/wiki/Uk-Sort-Code)
 * [Date dd / mm / yyyy](https://github.com/omarshammas/jquery.formance/wiki/Date-dd---mm---yyyy)
 * [Date yyyy / mm / dd](https://github.com/omarshammas/jquery.formance/wiki/Date-yyyy---mm---dd)
-* [Time yy / mm](https://github.com/omarshammas/jquery.formance/wiki/Time-yy---mm)
 * [Email Address](https://github.com/omarshammas/jquery.formance/wiki/Email-Address)
 * [Number](https://github.com/omarshammas/jquery.formance/wiki/Number)
 * [Ontario Driver's License Number](https://github.com/omarshammas/jquery.formance/wiki/Ontario-Driver's-License-Number)
@@ -39,6 +37,8 @@ Read this wiki article on [how to get started](https://github.com/omarshammas/jq
 * [Ontario Photo Health Card Number](https://github.com/omarshammas/jquery.formance/wiki/Ontario-Photo-Health-Card-Number)
 * [Phone Number (US & Canada)](https://github.com/omarshammas/jquery.formance/wiki/Phone-Number-%28US-%26-Canada%29)
 * [Postal Code (Canada)](https://github.com/omarshammas/jquery.formance/wiki/Postal-Code-%28Canada%29)
+* [Time yy / mm](https://github.com/omarshammas/jquery.formance/wiki/Time-yy---mm)
+* [Uk Sort Code](https://github.com/omarshammas/jquery.formance/wiki/Uk-Sort-Code)
 
 
 ## Wiki
