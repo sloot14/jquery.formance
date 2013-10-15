@@ -2,8 +2,8 @@ $ = jQuery
 
 class CreditCardExpiryField extends NumericFormanceField
 
-    restrict_field_callback: (e, val) =>
-        return false if val.length > 6
+    restrict_field_callback: (e, $target, old_val, digit, new_val) =>
+        return false if new_val.length > 6
 
     format_field_callback: (e, $target, old_val, digit, new_val) =>
         if /^\d$/.test(new_val) and new_val not in ['0', '1']
@@ -13,10 +13,6 @@ class CreditCardExpiryField extends NumericFormanceField
         else if /^\d\d$/.test(new_val)
             e.preventDefault()
             $target.val("#{new_val} / ")
-
-    format_forward_callback: (e, $target, val) =>
-        if /^\d\d$/.test(val)
-            $target.val("#{val} / ")
 
     format_forward_slash_callback: (e, $target, val) =>
         if /^\d$/.test(val) and val isnt '0'

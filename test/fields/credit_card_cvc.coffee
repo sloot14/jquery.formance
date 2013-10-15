@@ -6,6 +6,9 @@ require('../../lib/jquery.formance.js')
 
 
 describe 'credit_card_cvc.js', ->
+    it 'should format the cvc', ->
+        format '123',       52,        '1234',      'allows digits'
+        format '123',       100,       '123',       'does not allow non-digits'
 
     it 'should validate the cvc', ->
         validate '123',         yes,        'valid cvc'
@@ -27,7 +30,15 @@ describe 'credit_card_cvc.js', ->
 
 
 # helper functions
-# makes the test a lot clearer and legible
+format = (value, trigger, expected_value, message) ->
+    $cvc = $('<input type=text>').formance('format_credit_card_cvc')
+                                .val(value)
+    e = $.Event('keypress')
+    e.which = trigger
+    $cvc.trigger(e)
+
+    assert.equal $cvc.val(), expected_value, message
+
 validate = (value, valid, message) ->
     $cvc = $('<input type=text>').val(value)
     assert.equal $cvc.formance('validate_credit_card_cvc'), valid, message

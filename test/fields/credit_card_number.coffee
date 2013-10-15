@@ -61,8 +61,8 @@ describe 'credit_card_number.js', ->
 
     it 'should fail when asking for card type when dealing with special cases', ->
         # special cases
-        card_type 'aeou',         null,         'invalid card number'
-        card_type '9999',         null,         'has unrecognixed beginning numbers'
+        check_card_type 'aeou',         'unknown',         'invalid card number'
+        check_card_type '9999',         'unknown',         'has unrecognixed beginning numbers'
 
 
 
@@ -77,12 +77,15 @@ format = (value, trigger, expected_value, message) ->
     assert.equal $number.val(), expected_value, message
 
 validate_number_and_check_card_type = (value, card) ->
-    validate  value,    yes,    "#{card} - #{value}"
-    card_type value,    card,   "#{card} - #{value}"
+    validate            value,      yes,    "#{card} - #{value}"
+    check_card_type     value,      card,   "#{card} - #{value}"
 
 validate = (value, valid, message) ->
     $number = $('<input type=text>').val(value)
     assert.equal $number.formance('validate_credit_card_number'), valid, message
 
-card_type = (value, card, message) ->
-    assert.equal $.formance.credit_card_type(value), card, message
+check_card_type = (value, card, message) ->
+    $number = $('<input type=text>').formance('format_credit_card_number')
+                                    .val(value)
+                                    .trigger( $.Event('keyup') )
+    assert.equal $number.hasClass(card),    yes,     "#{card} - #{value}"
