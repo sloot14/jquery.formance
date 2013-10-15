@@ -15,7 +15,7 @@ describe 'yyyy_mm_dd.js', ->
 
         format '1995 / 01 / ',       57,         '1995 / 01 / 09',    'day shorthand, a number between 4-9'
         format '1996 / 01 / ',       49,         '1996 / 01 / 1',     'entering 1st digit for day'
-        format '1996 / 01 / 0',      52,         '1996 / 01 / 04',    'entering 2nd digit for day'
+        format '1997 / 01 / 0',      52,         '1996 / 01 / 04',    'entering 2nd digit for day'
 
         format '1994 / 01 / 0',      100,        '1994 / 01 / 0',     'does not allow non-digits'
 

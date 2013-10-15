@@ -2,27 +2,22 @@ $ = jQuery
 
 class DateYYYYMMDDField extends NumericFormanceField
 
-    restrict_field_callback: (e, val) =>
-        return false if val.length > 8
+    restrict_field_callback: (e, $target, old_val, digit, new_val) =>
+        return false if new_val.length > 8
 
     format_field_callback: (e, $target, old_val, digit, new_val) =>
-        if /^\d{4}$/.test(new_val)
-            e.preventDefault()
-            $target.val("#{new_val} / ")
-        else if /^\d{4}\s\/\s\d$/.test(new_val) and digit not in ['0', '1']
-            e.preventDefault()
-            $target.val("#{old_val}0#{digit} / ")
-        else if /^\d{4}\s\/\s\d{2}$/.test(new_val)
-            e.preventDefault()
-            $target.val("#{new_val} / ")
-        else if /^\d{4}\s\/\s\d{2}\s\/\s\d$/.test(new_val) and digit not in ['0', '1', '2', '3']
-            e.preventDefault()
-            $target.val("#{old_val}0#{digit}")
+        if (/^\d{4}[\s|\/]+\d$/.test(new_val) and digit not in ['0', '1']) or
+            (/^\d{4}[\s|\/]+\d{2}[\s|\/]+\d$/.test(new_val) and digit not in ['0', '1', '2', '3'])
+                
+                e.preventDefault()
+                new_val = "#{old_val}0#{digit}"
+                $target.val new_val
 
-    format_forward_callback: (e, $target, val) =>
-        # handles when entering the 4th and 6th digits
-        if /^\d{4}$/.test(val) or /^\d{4}\s\/\s\d{2}$/.test(val)
-            $target.val("#{val} / ")
+        if /^\d{4}$/.test(new_val) or
+            /^\d{4}[\s|\/]+\d{2}$/.test(new_val)
+            
+                e.preventDefault()
+                $target.val "#{new_val} / "
 
     format_forward_slash_callback: (e, $target, val) =>
         parse_month = /^(\d{4})\s\/\s(\d)$/
@@ -33,13 +28,9 @@ class DateYYYYMMDDField extends NumericFormanceField
                 $target.val("#{year} / 0#{month} / ")
 
     format_backspace_callback: (e, $target, val) =>
-        # Remove the trailing space
-        if /\d(\s|\/)+$/.test(val)
+        if /\d[\s|\/]+$/.test(val)
             e.preventDefault()
-            $target.val(val.replace(/\d(\s|\/)*$/, ''))
-        else if /\s\/\s?\d?$/.test(val)
-            e.preventDefault()
-            $target.val(val.replace(/\s\/\s?\d?$/, ''))
+            $target.val(val.replace(/\d[\s|\/]+$/, ''))
 
     validate: () ->
         date_dict = @parse_date @field.val()

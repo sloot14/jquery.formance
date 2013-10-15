@@ -2,8 +2,8 @@ $ = jQuery
 
 class PhoneNumberField extends AlphanumericFormanceField
 
-    restrict_callback: (e, val) =>
-        return false if value.length > 10
+    restrict_field_callback: (e, $target, old_val, digit, new_val) =>
+        return false if new_val.length > 10
 
     format_field_callback: (e, $target, old_val, digit, new_val) =>
         e.preventDefault()
@@ -13,15 +13,15 @@ class PhoneNumberField extends AlphanumericFormanceField
     format_backspace_callback: (e, $target, val) =>
         # Removes trailing spaces,brackets and dashes when
         # hitting backspace at one of the jumps
-        if /\(\d$/.test(value)
+        if /\(\d$/.test(val)
             e.preventDefault()
             $target.val('')
-        else if /\d\)(\s)+$/.test(value)
+        else if /\d\)\s+$/.test(val)
             e.preventDefault()
-            $target.val(value.replace(/\d\)(\s)*$/, ''))
-        else if /\d(\s|\-)+$/.test(value)
+            $target.val(val.replace(/\d\)\s+$/, ''))
+        else if /\d(\s|\-)+$/.test(val)
             e.preventDefault()
-            $target.val(value.replace(/\d(\s|\-)+$/, ''))
+            $target.val(val.replace(/\d(\s|\-)+$/, ''))
 
     format_paste_callback: (e, $target, val) =>
         text = @reformat_phone_number(val)

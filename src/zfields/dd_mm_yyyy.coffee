@@ -2,31 +2,26 @@ $ = jQuery
 
 class DateDDMMMYYYYField extends NumericFormanceField
 
-    restrict_field_callback: (e, val) =>
-        return false if val.length > 8
+    restrict_field_callback: (e, $target, old_val, digit, new_val) =>
+        return false if new_val.length > 8
 
     format_field_callback: (e, $target, old_val, digit, new_val) =>
-        if /^\d$/.test(new_val) and digit not in ['0', '1', '2', '3']
-            e.preventDefault()
-            $target.val("0#{new_val} / ")
-        else if /^\d{2}$/.test(new_val)
-            e.preventDefault()
-            $target.val("#{new_val} / ")
-        else if /^\d{2}\s\/\s\d$/.test(new_val) and digit not in ['0', '1']
-            e.preventDefault()
-            $target.val("#{old_val}0#{digit} / ")
-        else if /^\d{2}\s\/\s\d{2}$/.test(new_val)
-            e.preventDefault()
-            $target.val("#{new_val} / ")
+        if (/^\d$/.test(new_val) and digit not in ['0', '1', '2', '3']) or
+            (/^\d{2}[\s|\/]+\d$/.test(new_val) and digit not in ['0', '1'])
 
-    format_forward_callback: (e, $target, val) =>   #handles when the user enters the second digit
-        # handles when entering the 2nd and 4th digits
-        if /^\d{2}$/.test(val) or /^\d{2}\s\/\s\d{2}$/.test(val)
-            $target.val("#{val} / ")
+                e.preventDefault()
+                $target.val "#{old_val}0#{digit} / "
 
-    format_forward_slash_callback: (e, $target, val) =>    # handles when the user hits '/'
+        if /^\d{2}$/.test(new_val) or
+            /^\d{2}[\s|\/]+\d{2}$/.test(new_val)
+
+                e.preventDefault()
+                $target.val "#{new_val} / "
+
+    format_forward_slash_callback: (e, $target, val) =>
+        # handles when the user hits '/'
         parse_day = /^(\d)$/
-        parse_month = /^(\d{2})\s\/\s(\d)$/
+        parse_month = /^(\d{2})[\s|\/]+(\d)$/
 
         if parse_day.test(val) and val isnt '0'
             $target.val("0#{val} / ")
@@ -36,14 +31,9 @@ class DateDDMMMYYYYField extends NumericFormanceField
                 $target.val("#{day} / 0#{month} / ")
 
     format_backspace_callback: (e, $target, val) =>
-        # Remove the trailing space
-        if /\d(\s|\/)+$/.test(val)
+        if /\d[\s|\/]+$/.test(val)
             e.preventDefault()
-            $target.val(val.replace(/\d(\s|\/)*$/, ''))
-        else if /\s\/\s?\d?$/.test(val)
-            e.preventDefault()
-            $target.val(val.replace(/\s\/\s?\d?$/, ''))
-
+            $target.val(val.replace(/\d[\s|\/]+$/, ''))
 
     validate: () ->
         date_dict = @parse_date @field.val()

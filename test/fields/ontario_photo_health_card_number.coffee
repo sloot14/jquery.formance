@@ -1,5 +1,6 @@
 assert = require('assert')
 $      = require('jquery')
+sleep  = require('sleep')
 global.jQuery = $
 
 require('../../lib/jquery.formance.js')
@@ -17,7 +18,6 @@ describe 'ontario_photo_health_card_number.js', ->
 
         # add tests for backspacing
 
-
     it 'should validate an ontario photo health card number', ->
         validate '1234123123AB',            yes,        'valid'
         validate '1234 - 123 - 123 - AB',   yes,        'valid with spaces and dashes'
@@ -31,16 +31,17 @@ describe 'ontario_photo_health_card_number.js', ->
         validate '1234 - 123; - 123 - AB',  no,         'contains non-alphanumeric characters'
 
 
+
 format = (value, trigger, expected_value, message) ->
-    $oocn = $('<input type=text>').formance('format_ontario_photo_health_card_number')
+    $ophc = $('<input type=text>').formance('format_ontario_photo_health_card_number')
                                   .val(value)
 
     e = $.Event('keypress')
     e.which = trigger
-    $oocn.trigger(e)
+    $ophc.trigger(e)
 
-    assert.equal $oocn.val(), expected_value, message
+    assert.equal $ophc.val(), expected_value, message
 
 validate = (value, valid, message) ->
-    $oocn = $('<input type=text>').val(value)
-    assert.equal $oocn.formance('validate_ontario_photo_health_card_number'), valid, message
+    $ophc = $('<input type=text>').val(value)
+    assert.equal $ophc.formance('validate_ontario_photo_health_card_number'), valid, message

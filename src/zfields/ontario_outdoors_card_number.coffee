@@ -2,8 +2,8 @@ $ = jQuery
 
 class OntarioOutdoorsCardNumberField extends NumericFormanceField
 
-    restrict_callback: (e, val) =>
-        return false if value.length > 15
+    restrict_field_callback: (e, $target, old_val, digit, new_val) =>
+        return false if new_val.length > 15
 
     format_field_callback: (e, $target, old_val, digit, new_val) =>
         if old_val is ''
@@ -11,15 +11,10 @@ class OntarioOutdoorsCardNumberField extends NumericFormanceField
             val = if /^7$/.test(new_val) then "708158 " else "708158 #{new_val}"
             $target.val(val)
 
-        else if /^\d{5}$/.test(old_val)
-            e.preventDefault()
-            val = "#{new_val} " if /^\d{6}$/.test(new_val)
-            target.val(val) if /^\d{6}\s*$/.test(val)
-
     format_backspace_callback: (e, $target, val) =>
-        if /708158\s+$/.test(val)
+        if /^708158\s+$/.test(val)
             e.preventDefault()
-            $target.val(val.replace(/708158\s+$/, ''))
+            $target.val(val.replace(/^708158\s+$/, ''))
 
     format_paste_callback: (e, $target, val) =>
         [full, first6, last9] = val.match(/^(\d{6})\s*(\d{9})$/)
