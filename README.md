@@ -37,6 +37,8 @@ Read this wiki article on [how to get started](https://github.com/omarshammas/jq
 * [Ontario Photo Health Card Number](https://github.com/omarshammas/jquery.formance/wiki/Ontario-Photo-Health-Card-Number)
 * [Phone Number (US & Canada)](https://github.com/omarshammas/jquery.formance/wiki/Phone-Number-%28US-%26-Canada%29)
 * [Postal Code (Canada)](https://github.com/omarshammas/jquery.formance/wiki/Postal-Code-%28Canada%29)
+* [Time yy / mm](https://github.com/omarshammas/jquery.formance/wiki/Time-yy---mm)
+* [Uk Sort Code](https://github.com/omarshammas/jquery.formance/wiki/Uk-Sort-Code)
 
 
 ## Wiki
