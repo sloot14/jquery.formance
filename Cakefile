@@ -22,9 +22,11 @@ build = (watch, callback) ->
         callback = watch
         watch = false
 
-    options = ['-j', 'lib/jquery.formance.js', '-c', 'src']
+    formance_file_name = get_formance_file_name()
+    options = ['-j', 'lib/' + formance_file_name, '-c', 'src']
     options.unshift '-w' if watch
-    run 'coffee', options, callback
+    run 'coffee', options, () ->
+        shell "cd lib && ln -fs " + formance_file_name + " jquery.formance.js", callback
 
 test = (bail, callback) ->
     if typeof bail is 'function'
@@ -35,8 +37,26 @@ test = (bail, callback) ->
      options.unshift '-b' if bail
      run 'mocha', options, callback
 
+get_version = () ->
+    data = fs.readFileSync 'package.json', 'utf8'
+    data = JSON.parse(data)
+    return data.version
+
+get_formance_file_name = () ->
+    'jquery.formance-' + get_version() + '.js'
+
+add_min_to_file_name = (file_name) ->
+    nameparts = file_name.split '.'
+    nameparts[nameparts.length-1] = 'min'
+    nameparts.push 'js'
+    nameparts.join '.'
+
+
 # task 'coffee', 'Build lib/ from src/', ->
 #     run 'coffee', '-co', 'lib', 'src'
+
+task 'version', 'Returns the version of formance', ->
+    console.log get_version()
 
 task 'coffee', 'Builds lib/jquery.formance.js from src/', ->
     build false
@@ -59,13 +79,13 @@ task 'minify', 'Minifies any js file in the lib/ folder.', ->
         for file in files
             continue if not /\.js$/.test(file) or /\.min\.js$/.test(file)
 
-            nameparts = file.split '.'
-            nameparts[nameparts.length-1] = 'min'
-            nameparts.push 'js'
-            newname = nameparts.join '.'
-            print "minify: #{file} -> #{newname}"
-                
-            shell "uglifyjs --output #{dir}/#{newname} #{dir}/#{file}"
+            new_name = add_min_to_file_name(file)
+            print "minify: #{file} -> #{new_name}"
+    
+            if file is 'jquery.formance.js'
+                shell "cd #{dir} && ln -fs #{add_min_to_file_name(get_formance_file_name())} #{new_name}"
+            else
+                shell "cd #{dir} && uglifyjs --output #{new_name} #{file}"
 
 task 'build', 'Builds lib/jquery.formance.js and minifies it.', ->
     build ->
