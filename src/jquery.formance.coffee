@@ -10,16 +10,17 @@ class FormanceField
     constructor: (@field, @regex, @replace_regex) ->
 
     restrict_field: (e) =>
-        $target = $(e.currentTarget)
         input   = String.fromCharCode(e.which)
         return unless @regex.test(input)
 
-        return if @has_text_selected($target)
-        
-        value = $target.val() + input
-        value = value.replace(@replace_regex, '')
+        $target = $(e.currentTarget)
+        old_val = $target.val()
+        new_val = old_val + input
+        new_val = new_val.replace(@replace_regex, '')
 
-        @restrict_field_callback(e, value)
+        return if @has_text_selected($target)
+
+        @restrict_field_callback(e, $target, old_val, input, new_val)
 
     format_field: (e) =>
         input = String.fromCharCode(e.which)
@@ -33,15 +34,6 @@ class FormanceField
 
         @format_field_callback(e, $target, old_val, input, new_val)
         
-    format_forward: (e) =>
-        input = String.fromCharCode(e.which)
-        return unless @regex.test(input)
-
-        $target = $(e.currentTarget)
-        val     = $target.val()
-
-        @format_forward_callback(e, $target, val)
-
     format_forward_slash: (e) =>
         slash = String.fromCharCode(e.which)
         return unless slash is '/'
@@ -56,14 +48,14 @@ class FormanceField
         return if e.meta
 
         $target = $(e.currentTarget)
-        value   = $target.val()
+        val = $target.val()
 
         # Return unless backspacing
         return unless e.which is 8
 
         return if @end_of_text($target)
 
-        @format_backspace_callback(e, $target, value)
+        @format_backspace_callback(e, $target, val)
 
     format_paste: (e) =>
         setTimeout => # it takes a bit of time for the paste event to add the input, so wait a bit
@@ -75,7 +67,6 @@ class FormanceField
     format: () ->
         @field.on('keypress', @restrict_field)          if @restrict_field_callback?
         @field.on('keypress', @format_field)            if @format_field_callback?
-        @field.on('keypress', @format_forward)          if @format_forward_callback?
         @field.on('keypress', @format_forward_slash)    if @format_forward_slash_callback?
         @field.on('keydown',  @format_backspace)        if @format_backspace_callback?
         @field.on('paste',    @format_paste)            if @format_paste_callback?
@@ -83,7 +74,7 @@ class FormanceField
     end_of_text: ($target) =>
         # is focus at the end of the text
         $target.prop('selectionStart')? and
-            $target.prop('selectionStart') isnt value.length
+            $target.prop('selectionStart') isnt $target.val().length
 
     has_text_selected: ($target) =>
         # if some text is selected
