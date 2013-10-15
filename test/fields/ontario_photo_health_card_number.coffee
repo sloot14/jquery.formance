@@ -1,6 +1,5 @@
 assert = require('assert')
 $      = require('jquery')
-sleep  = require('sleep')
 global.jQuery = $
 
 require('../../lib/jquery.formance.js')
