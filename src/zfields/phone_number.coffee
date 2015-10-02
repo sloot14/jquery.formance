@@ -11,7 +11,7 @@ reFormatPhoneNumber = (phoneNumberString) ->
     text += ") " if areaCode?.length is 3
 
     text += "#{first3}" if first3?
-    text += " - " if first3?.length is 3
+    text += "-" if first3?.length is 3
 
     text += "#{last4}" if last4?
     return text
